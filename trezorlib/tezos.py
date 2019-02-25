@@ -36,3 +36,16 @@ def get_public_key(client, address_n, show_display=False):
 def sign_tx(client, address_n, sign_tx_msg):
     sign_tx_msg.address_n = address_n
     return client.call(sign_tx_msg)
+
+
+@expect(messages.TezosSignedDelegatorOp)
+def sign_delegator_op(client, address_n, sign_del_msg):
+    sign_del_msg.address_n = address_n
+    return client.call(sign_del_msg)
+
+
+@expect(messages.Success)
+def control_staking(client, stake):
+    return client.call(
+        messages.TezosControlStaking(staking=stake)
+    )
