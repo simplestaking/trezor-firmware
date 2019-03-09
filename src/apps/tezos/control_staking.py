@@ -18,12 +18,12 @@ async def control_staking(ctx, msg):
             await layout.require_confirm_staking(ctx)
             helpers.set_staking_state(True)
         else:
-            return Failure()
+            return Success(message="Trezor is already in staking mode")
     else:
         if helpers.check_staking_confirmed():
             await helpers.prompt_pin()
             helpers.set_staking_state(False)
         else:
-            return Failure()
+            return Success(message="Trezor not in staking mode")
 
     return Success()
