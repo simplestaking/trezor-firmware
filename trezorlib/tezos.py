@@ -38,14 +38,14 @@ def sign_tx(client, address_n, sign_tx_msg):
     return client.call(sign_tx_msg)
 
 
-@expect(messages.TezosSignedDelegatorOp)
-def sign_delegator_op(client, address_n, sign_del_msg):
-    sign_del_msg.address_n = address_n
-    return client.call(sign_del_msg)
+@expect(messages.TezosSignedBakerOp)
+def sign_baker_op(client, address_n, sign_baker_msg):
+    sign_baker_msg.address_n = address_n
+    return client.call(sign_baker_msg)
 
 
 @expect(messages.Success)
-def control_staking(client, stake):
+def control_baking(client, stake):
     return client.call(
-        messages.TezosControlStaking(staking=stake)
+        messages.TezosControlBaking(baking=stake)
     )
