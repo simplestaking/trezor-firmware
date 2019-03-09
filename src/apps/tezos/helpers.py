@@ -9,7 +9,7 @@ from apps.common.request_pin import request_pin
 
 # TODO: move to storage?
 _TEZOS = const(0x02)  # Tezos namespace
-_STAKING = const(0x01)  # Key for staking state
+_BAKING = const(0x01)  # Key for staking state
 
 TEZOS_AMOUNT_DIVISIBILITY = const(6)
 TEZOS_ED25519_ADDRESS_PREFIX = "tz1"
@@ -61,19 +61,19 @@ def validate_full_path(path: list) -> bool:
     return True
 
 
-def check_staking_confirmed():
-    return int.from_bytes(config.get(_TEZOS, _STAKING), "big")
+def check_baking_confirmed():
+    return int.from_bytes(config.get(_TEZOS, _BAKING), "big")
 
 
-def set_staking_state(boolean):
+def set_baking_state(boolean):
     if boolean:
-        config.set(_TEZOS, _STAKING, b"\x01")
+        config.set(_TEZOS, _BAKING, b"\x01")
     else:
-        config.set(_TEZOS, _STAKING, b"\x00")
+        config.set(_TEZOS, _BAKING, b"\x00")
 
 
 async def prompt_pin():
-    label = "Staking ending"
+    label = "Baking ending"
     while True:
         pin = await request_pin(label, cancellable=False)
         if config.check_pin(pin_to_int(pin)):

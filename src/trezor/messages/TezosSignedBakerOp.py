@@ -3,17 +3,17 @@
 import protobuf as p
 
 
-class TezosControlStaking(p.MessageType):
-    MESSAGE_WIRE_TYPE = 158
+class TezosSignedBakerOp(p.MessageType):
+    MESSAGE_WIRE_TYPE = 157
 
     def __init__(
         self,
-        staking: bool = None,
+        signature: str = None,
     ) -> None:
-        self.staking = staking
+        self.signature = signature
 
     @classmethod
     def get_fields(cls):
         return {
-            1: ('staking', p.BoolType, 0),
+            1: ('signature', p.UnicodeType, 0),
         }

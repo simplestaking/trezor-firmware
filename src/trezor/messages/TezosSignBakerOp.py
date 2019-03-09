@@ -12,7 +12,7 @@ if __debug__:
         List = None  # type: ignore
 
 
-class TezosSignDelegatorOp(p.MessageType):
+class TezosSignBakerOp(p.MessageType):
     MESSAGE_WIRE_TYPE = 156
 
     def __init__(

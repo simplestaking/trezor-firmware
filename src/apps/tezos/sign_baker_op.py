@@ -1,7 +1,7 @@
 from trezor import wire, loop
 from trezor.crypto import hashlib
 from trezor.crypto.curve import ed25519
-from trezor.messages.TezosSignedDelegatorOp import TezosSignedDelegatorOp
+from trezor.messages.TezosSignedBakerOp import TezosSignedBakerOp
 
 from apps.common import paths
 from apps.tezos import helpers, layout, writers
@@ -15,11 +15,11 @@ from apps.tezos.writers import (
 )
 
 
-async def sign_delegator_op(ctx, msg, keychain):
+async def sign_baker_op(ctx, msg, keychain):
     paths.validate_path(ctx, helpers.validate_full_path, path=msg.address_n)
     node = keychain.derive(msg.address_n, helpers.TEZOS_CURVE)
 
-    if helpers.check_staking_confirmed():
+    if helpers.check_baking_confirmed():
         # Accept endorsements and block headers only, otherwise lock the device
         if _check_operation_watermark(msg.magic_byte):
             w = bytearray()
@@ -30,7 +30,7 @@ async def sign_delegator_op(ctx, msg, keychain):
             helpers.set_staking_state(False)
             raise wire.DataError("Invalid operation")
 
-        return TezosSignedDelegatorOp(signature=sig_prefixed)
+        return TezosSignedBakerOp(signature=sig_prefixed)
     else:
         raise wire.DataError("Invalid operation")
 
@@ -73,7 +73,7 @@ async def _sign(ctx, w, node):
         signature, prefix=helpers.TEZOS_SIGNATURE_PREFIX
     )
 
-    await layout.show_staking_signature(
+    await layout.show_baking_signature(
         sig_prefixed[:8] + " . . . " + sig_prefixed[-8:], w[0]
     )
     await ctx.wait(loop.sleep(4 * 1000 * 1000))

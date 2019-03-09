@@ -11,7 +11,7 @@ workflow_handlers = {}
 
 # TODO: move to storage?
 _TEZOS = const(0x02)  # Tezos namespace
-_STAKING = const(0x01)  # Key for staking state
+_BAKING = const(0x01)  # Key for staking state
 
 
 def add(mtype, pkgname, modname, namespace=None):
@@ -168,8 +168,8 @@ async def protobuf_workflow(ctx, reader, handler, *args):
 
     req = await protobuf.load_message(reader, messages.get_type(reader.type))
 
-    # Tezos: if the user is staking, block all other messages
-    if int.from_bytes(config.get(_TEZOS, _STAKING), "big"):
+    # Tezos: if the user is baking, block all other messages
+    if int.from_bytes(config.get(_TEZOS, _BAKING), "big"):
         if req.MESSAGE_WIRE_TYPE not in [0, 5, 100, 156, 158]:
             await unexpected_msg(ctx, reader)
             raise wire.UnexpectedMessage("Not allowed!")

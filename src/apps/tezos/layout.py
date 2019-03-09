@@ -62,13 +62,13 @@ async def require_confirm_register_delegate(ctx, address, fee):
     await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
-async def require_confirm_staking(ctx):
-    text = Text("Confirm staking", ui.ICON_SEND, icon_color=ui.GREEN)
+async def require_confirm_baking(ctx):
+    text = Text("Confirm baking", ui.ICON_SEND, icon_color=ui.GREEN)
     text.bold("Confirm?")
     return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
-async def show_staking_signature(signature, watermark):
+async def show_baking_signature(signature, watermark):
     ui.display.clear()
     text = Text("Signed", ui.ICON_SEND, icon_color=ui.GREEN)
     text.bold("Type: " + get_operation(watermark))
@@ -94,7 +94,4 @@ def format_tezos_amount(value):
 
 
 def get_operation(wm):
-    if wm is 1:
-        return "Block"
-    else:
-        return "Endorsement"
+    return "Block" if wm == 1 else "Endorsement"

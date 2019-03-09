@@ -1,6 +1,7 @@
 from trezor import config, io, loop, res, ui
 
 from apps.common import storage
+from apps.tezos import helpers
 
 
 async def homescreen():
@@ -46,6 +47,12 @@ def display_homescreen():
         ui.display.bar(0, 0, ui.WIDTH, 30, ui.YELLOW)
         ui.display.text_center(
             ui.WIDTH // 2, 22, "PIN NOT SET!", ui.BOLD, ui.BLACK, ui.YELLOW
+        )
+        ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
+    elif helpers.check_baking_confirmed():
+        ui.display.bar(0, 0, ui.WIDTH, 30, ui.GREEN)
+        ui.display.text_center(
+            ui.WIDTH // 2, 22, "BAKING MODE", ui.BOLD, ui.WHITE, ui.GREEN
         )
         ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
     else:
