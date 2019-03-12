@@ -52,7 +52,7 @@ def display_homescreen():
     elif helpers.check_baking_confirmed():
         ui.display.bar(0, 0, ui.WIDTH, 30, ui.GREEN)
         ui.display.text_center(
-            ui.WIDTH // 2, 22, "TEZOS BAKING MODE", ui.BOLD, ui.WHITE, ui.GREEN
+            ui.WIDTH // 2, 22, "TEZOS BAKING", ui.BOLD, ui.WHITE, ui.GREEN
         )
         ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
     else:

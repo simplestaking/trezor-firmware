@@ -170,7 +170,7 @@ async def protobuf_workflow(ctx, reader, handler, *args):
 
     # Tezos: if the user is baking, block all other messages
     if int.from_bytes(config.get(_TEZOS, _BAKING), "big"):
-        if req.MESSAGE_WIRE_TYPE not in [0, 5, 100, 156, 158]:
+        if req.MESSAGE_WIRE_TYPE not in [0, 5, 100, 150, 154, 156, 158]:
             await unexpected_msg(ctx, reader)
             raise wire.UnexpectedMessage("Not allowed!")
 

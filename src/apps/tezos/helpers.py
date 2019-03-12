@@ -73,7 +73,7 @@ def set_baking_state(boolean):
 
 
 async def prompt_pin():
-    label = "Baking ending"
+    label = "Stop Tezos baking"
     while True:
         pin = await request_pin(label, cancellable=False)
         if config.check_pin(pin_to_int(pin)):

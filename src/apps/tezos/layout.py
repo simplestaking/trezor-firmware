@@ -63,20 +63,34 @@ async def require_confirm_register_delegate(ctx, address, fee):
 
 
 async def require_confirm_baking(ctx):
-    text = Text("Confirm baking", ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold("Confirm?")
+    text = Text("Start Tezos baking", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("When baking mode is ")
+    text.normal("enabled, only baking &")
+    text.normal("endorsement operations")
+    text.normal("are allowed")
     return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
-
-async def show_baking_signature(signature, watermark):
+async def show_endorsement_operation(msg):
     ui.display.clear()
-    text = Text("Signed", ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold("Type: " + get_operation(watermark))
-    text.bold("Signature:")
-    text.normal(signature)
+    text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("")
+    text.bold("Level:")
+    text.normal(str(msg.endorsement.level))
+    text.bold("Type:")
+    text.normal("Endorsement")
     text.render()
     ui.display.backlight(ui.BACKLIGHT_NORMAL)
 
+async def show_baking_operation(msg):
+    ui.display.clear()
+    text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("")
+    text.bold("Level:")
+    text.normal(str(msg.block_header.level))
+    text.bold("Type:")
+    text.normal("Baking")
+    text.render()
+    ui.display.backlight(ui.BACKLIGHT_NORMAL)
 
 async def no_pin_dialog(ctx):
     text = Text("Pin is not set", ui.ICON_WRONG, icon_color=ui.RED)
