@@ -8,6 +8,7 @@ from trezor.wire.errors import *
 from apps.common import seed
 
 workflow_handlers = {}
+tezos_staking_allowed_messages = [0, 5, 17, 100, 156, 158]
 
 # TODO: move to storage?
 _TEZOS = const(0x02)  # Tezos namespace
@@ -168,12 +169,6 @@ async def protobuf_workflow(ctx, reader, handler, *args):
 
     req = await protobuf.load_message(reader, messages.get_type(reader.type))
 
-    # Tezos: if the user is baking, block all other messages
-    if int.from_bytes(config.get(_TEZOS, _BAKING), "big"):
-        if req.MESSAGE_WIRE_TYPE not in [0, 5, 100, 150, 154, 156, 158]:
-            await unexpected_msg(ctx, reader)
-            raise wire.UnexpectedMessage("Not allowed!")
-
     try:
         res = await handler(ctx, req, *args)
     except UnexpectedMessageError:
@@ -222,3 +217,11 @@ async def unexpected_msg(ctx, reader):
     await ctx.write(
         Failure(code=FailureType.UnexpectedMessage, message="Unexpected message")
     )
+
+
+# remove all handlers, except the ones used in tezos staking
+def tezos_remove_handelrs():
+
+    for handler in workflow_handlers.keys():
+        if handler not in tezos_staking_allowed_messages:
+            workflow_handlers.pop(handler, None)

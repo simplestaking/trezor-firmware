@@ -1,4 +1,4 @@
-from trezor import config
+from trezor import config, wire
 from trezor.messages.Failure import Failure
 from trezor.messages.Success import Success
 from trezor.pin import pin_to_int
@@ -16,7 +16,8 @@ async def control_baking(ctx, msg):
     if msg.baking is True:
         if not helpers.check_baking_confirmed():
             await layout.require_confirm_baking(ctx)
-            helpers.set_baking_state(True)
+            # helpers.set_baking_state(True)
+            wire.tezos_remove_handelrs()
         else:
             return Success(message="Trezor is already in staking mode")
     else:
