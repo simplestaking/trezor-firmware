@@ -19,20 +19,20 @@ async def sign_baker_op(ctx, msg, keychain):
     paths.validate_path(ctx, helpers.validate_full_path, path=msg.address_n)
     node = keychain.derive(msg.address_n, helpers.TEZOS_CURVE)
 
-    if helpers.check_baking_confirmed():
-        # Accept endorsements and block headers only, otherwise lock the device
-        if _check_operation_watermark(msg.magic_byte):
-            w = bytearray()
-            _get_operation_bytes(w, msg)
-            sig_prefixed = await _sign(ctx, bytes(w), node, msg)
-        else:
-            await helpers.prompt_pin()
-            helpers.set_staking_state(False)
-            raise wire.DataError("Invalid operation")
-
-        return TezosSignedBakerOp(signature=sig_prefixed)
-    else:
+    if not wire.is_baking():
         raise wire.DataError("Invalid operation")
+
+    # Accept endorsements and block headers only, otherwise lock the device
+    if _check_operation_watermark(msg.magic_byte):
+        w = bytearray()
+        _get_operation_bytes(w, msg)
+        sig_prefixed = await _sign(ctx, bytes(w), node, msg)
+    else:
+        await helpers.prompt_pin()
+        helpers.set_staking_state(False)
+        raise wire.DataError("Invalid operation")
+
+    return TezosSignedBakerOp(signature=sig_prefixed)
 
 
 def _get_operation_bytes(w: bytearray, msg):

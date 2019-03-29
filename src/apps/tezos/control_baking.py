@@ -10,21 +10,12 @@ from apps.tezos import helpers, layout
 async def control_baking(ctx, msg):
 
     if not config.has_pin():
-        await layout.no_pin_dialog(ctx)
         return Failure()
 
     if msg.baking is True:
-        if not helpers.check_baking_confirmed():
+        if not wire.is_baking():
             await layout.require_confirm_baking(ctx)
-            # helpers.set_baking_state(True)
             wire.tezos_remove_handelrs()
+            return  Success(message="Baking mode activated")
         else:
-            return Success(message="Trezor is already in staking mode")
-    else:
-        if helpers.check_baking_confirmed():
-            await helpers.prompt_pin()
-            helpers.set_baking_state(False)
-        else:
-            return Success(message="Trezor not in staking mode")
-
-    return Success()
+            return Success(message="Trezor is already in baking mode")

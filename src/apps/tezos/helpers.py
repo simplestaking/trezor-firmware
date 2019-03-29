@@ -61,17 +61,6 @@ def validate_full_path(path: list) -> bool:
     return True
 
 
-def check_baking_confirmed():
-    return int.from_bytes(config.get(_TEZOS, _BAKING), "big")
-
-
-def set_baking_state(boolean):
-    if boolean:
-        config.set(_TEZOS, _BAKING, b"\x01")
-    else:
-        config.set(_TEZOS, _BAKING, b"\x00")
-
-
 async def prompt_pin():
     label = "Stop Tezos baking"
     while True:
