@@ -1,5 +1,6 @@
 from trezor import wire, loop
-from trezor.crypto import hashlib
+from trezor.crypto.hashlib import blake2b
+from trezor.utils import HashWriter
 from trezor.crypto.curve import ed25519
 from trezor.messages.TezosSignedBakerOp import TezosSignedBakerOp
 
@@ -22,9 +23,7 @@ async def sign_baker_op(ctx, msg, keychain):
     if not wire.is_baking():
         raise wire.DataError("Invalid operation")
 
-    w = bytearray()
-    _get_operation_bytes(w, msg)
-    sig_prefixed = await _sign(ctx, bytes(w), node, msg)
+    sig_prefixed = await _sign(ctx, node, msg)
 
     return TezosSignedBakerOp(signature=sig_prefixed)
 
@@ -55,8 +54,12 @@ def _get_operation_bytes(w: bytearray, msg):
             write_bytes(w, msg.block_header.seed_nonce_hash)
 
 
-async def _sign(ctx, w, node, msg):
-    wm_opbytes_hash = hashlib.blake2b(w, outlen=32).digest()
+async def _sign(ctx, node, msg):
+    h_sign = HashWriter(blake2b(outlen=32))
+
+    _get_operation_bytes(h_sign, msg)
+    wm_opbytes_hash = h_sign.get_digest()
+
     signature = ed25519.sign(node.private_key(), wm_opbytes_hash)
     sig_prefixed = helpers.base58_encode_check(
         signature, prefix=helpers.TEZOS_SIGNATURE_PREFIX
