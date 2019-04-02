@@ -8,6 +8,12 @@ from apps.common import paths
 from apps.common.writers import write_bytes, write_uint8
 from apps.tezos import CURVE, helpers, layout
 
+from apps.tezos.writers import (
+    write_bool,
+    write_bytes,
+    write_uint8,
+)
+
 
 async def sign_tx(ctx, msg, keychain):
     await paths.validate_path(
@@ -121,8 +127,8 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_common(w, msg.origination, "origination")
         write_bytes(w, msg.origination.manager_pubkey)
         _encode_zarith(w, msg.origination.balance)
-        _encode_bool(w, msg.origination.spendable)
-        _encode_bool(w, msg.origination.delegatable)
+        write_bool(w, msg.origination.spendable)
+        write_bool(w, msg.origination.delegatable)
         _encode_data_with_bool_prefix(w, msg.origination.delegate)
         _encode_data_with_bool_prefix(w, msg.origination.script)
     # delegation operation
@@ -146,19 +152,12 @@ def _encode_contract_id(w: bytearray, contract_id):
     write_bytes(w, contract_id.hash)
 
 
-def _encode_bool(w: bytearray, boolean):
-    if boolean:
-        write_uint8(w, 255)
-    else:
-        write_uint8(w, 0)
-
-
 def _encode_data_with_bool_prefix(w: bytearray, data):
     if data:
-        _encode_bool(w, True)
+        write_bool(w, True)
         write_bytes(w, data)
     else:
-        _encode_bool(w, False)
+        write_bool(w, False)
 
 
 def _encode_zarith(w: bytearray, num):
