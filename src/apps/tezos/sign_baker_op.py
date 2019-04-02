@@ -22,15 +22,9 @@ async def sign_baker_op(ctx, msg, keychain):
     if not wire.is_baking():
         raise wire.DataError("Invalid operation")
 
-    # Accept endorsements and block headers only, otherwise lock the device
-    if _check_operation_watermark(msg.magic_byte):
-        w = bytearray()
-        _get_operation_bytes(w, msg)
-        sig_prefixed = await _sign(ctx, bytes(w), node, msg)
-    else:
-        await helpers.prompt_pin()
-        helpers.set_staking_state(False)
-        raise wire.DataError("Invalid operation")
+    w = bytearray()
+    _get_operation_bytes(w, msg)
+    sig_prefixed = await _sign(ctx, bytes(w), node, msg)
 
     return TezosSignedBakerOp(signature=sig_prefixed)
 
@@ -59,11 +53,6 @@ def _get_operation_bytes(w: bytearray, msg):
         write_bool(w, msg.block_header.presence_of_field_seed_nonce_hash)
         if msg.block_header.seed_nonce_hash:
             write_bytes(w, msg.block_header.seed_nonce_hash)
-
-
-def _check_operation_watermark(watermark):
-    # payload must be endorsement - 0x02 or block - 0x01
-    return watermark[0] in [1, 2]
 
 
 async def _sign(ctx, w, node, msg):
