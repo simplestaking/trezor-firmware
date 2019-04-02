@@ -4,6 +4,7 @@ from trezor.crypto.hashlib import blake2b
 from trezor.utils import HashWriter
 from trezor.crypto.curve import ed25519
 from trezor.messages.TezosSignedBakerOp import TezosSignedBakerOp
+from trezor.messages.Failure import Failure
 
 from apps.common import paths
 from apps.tezos import helpers, layout, writers
@@ -22,7 +23,11 @@ ENDORSEMENT_TAG = const(0)
 
 
 async def sign_baker_op(ctx, msg, keychain):
-    paths.validate_path(ctx, helpers.validate_full_path, path=msg.address_n)
+    # paths.validate_path(ctx, helpers.validate_full_path, path=msg.address_n)
+
+    if not helpers.validate_full_path(msg.address_n):
+        return Failure()
+
     node = keychain.derive(msg.address_n, helpers.TEZOS_CURVE)
 
     if not wire.is_baking():
