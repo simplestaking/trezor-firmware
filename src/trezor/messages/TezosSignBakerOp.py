@@ -18,13 +18,11 @@ class TezosSignBakerOp(p.MessageType):
     def __init__(
         self,
         address_n: List[int] = None,
-        magic_byte: bytes = None,
         chain_id: bytes = None,
         endorsement: TezosEndorsement = None,
         block_header: TezosBlockHeader = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
-        self.magic_byte = magic_byte
         self.chain_id = chain_id
         self.endorsement = endorsement
         self.block_header = block_header
@@ -33,8 +31,7 @@ class TezosSignBakerOp(p.MessageType):
     def get_fields(cls):
         return {
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
-            2: ('magic_byte', p.BytesType, 0),
-            3: ('chain_id', p.BytesType, 0),
-            4: ('endorsement', TezosEndorsement, 0),
-            5: ('block_header', TezosBlockHeader, 0),
+            2: ('chain_id', p.BytesType, 0),
+            3: ('endorsement', TezosEndorsement, 0),
+            4: ('block_header', TezosBlockHeader, 0),
         }

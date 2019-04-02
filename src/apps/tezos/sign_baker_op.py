@@ -1,3 +1,4 @@
+from micropython import const
 from trezor import wire, loop
 from trezor.crypto.hashlib import blake2b
 from trezor.utils import HashWriter
@@ -15,6 +16,10 @@ from apps.tezos.writers import (
     write_uint64,
 )
 
+BLOCK_WATERMARK = const(1)
+ENDORSEMENT_WATERMARK = const(2)
+ENDORSEMENT_TAG = const(0)
+
 
 async def sign_baker_op(ctx, msg, keychain):
     paths.validate_path(ctx, helpers.validate_full_path, path=msg.address_n)
@@ -29,14 +34,16 @@ async def sign_baker_op(ctx, msg, keychain):
 
 
 def _get_operation_bytes(w: bytearray, msg):
-    write_bytes(w, msg.magic_byte)
-    write_bytes(w, msg.chain_id)
-
     if msg.endorsement is not None:
+        write_uint8(w, ENDORSEMENT_WATERMARK)
+        write_bytes(w, msg.chain_id)
         write_bytes(w, msg.endorsement.branch)
-        write_uint8(w, msg.endorsement.tag)
+        write_uint8(w, ENDORSEMENT_TAG)
         write_uint32(w, msg.endorsement.level)
+
     elif msg.block_header is not None:
+        write_uint8(w, BLOCK_WATERMARK)
+        write_bytes(w, msg.chain_id)
         write_uint32(w, msg.block_header.level)
         write_uint8(w, msg.block_header.proto)
         write_bytes(w, msg.block_header.predecessor)
