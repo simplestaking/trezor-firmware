@@ -8,12 +8,7 @@ from trezor.wire.errors import *
 from apps.common import seed
 
 workflow_handlers = {}
-tezos_baking_allowed_messages = [0, 2, 3, 5, 17, 100, 156, 157, 158]
-
-NORMAL_MODE = const(0)          # normal Trezor
-TEZOS_BAKING_MODE = const(1)    # baking Trezor with registered messages only for baking
-
-mode = NORMAL_MODE
+tezos_baking_allowed_messages = [0, 150, 154, 156, 158]
 
 
 def add(mtype, pkgname, modname, namespace=None):
@@ -170,8 +165,6 @@ async def protobuf_workflow(ctx, reader, handler, *args):
 
     req = await protobuf.load_message(reader, messages.get_type(reader.type))
 
-    print("REQ: {}".format(req.MESSAGE_WIRE_TYPE))
-
     try:
         res = await handler(ctx, req, *args)
     except UnexpectedMessageError:
@@ -189,7 +182,6 @@ async def protobuf_workflow(ctx, reader, handler, *args):
         raise
     if res:
         # respond with a specific response
-        print("RES: {}".format(res.MESSAGE_WIRE_TYPE))
         await ctx.write(res)
 
 
@@ -223,16 +215,12 @@ async def unexpected_msg(ctx, reader):
     )
 
 
-# remove all handlers, except the ones used in tezos staking
 def tezos_remove_handelrs():
-    global mode
-    mode = TEZOS_BAKING_MODE
-
+    # remove all handlers, except the ones used in tezos baking
     for handler in workflow_handlers.keys():
         if handler not in tezos_baking_allowed_messages:
             workflow_handlers.pop(handler, None)
 
 
 def is_baking():
-    print("Mode: {}".format(mode))
-    return mode
+    return len(workflow_handlers) == len(tezos_baking_allowed_messages)
