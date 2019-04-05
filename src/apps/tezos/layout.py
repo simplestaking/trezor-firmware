@@ -92,11 +92,6 @@ async def show_baking_operation(msg):
     text.render()
     ui.display.backlight(ui.BACKLIGHT_NORMAL)
 
-async def no_pin_dialog(ctx):
-    text = Text("Pin is not set", ui.ICON_WRONG, icon_color=ui.RED)
-    text.normal("You need to set a pin to start staking")
-    return await require_confirm(ctx, text, ButtonRequestType.Other)
-
 
 def split_address(address):
     return chunks(address, 18)
