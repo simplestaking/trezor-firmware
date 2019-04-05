@@ -8,7 +8,6 @@ from apps.tezos import helpers, layout
 
 
 async def control_baking(ctx, msg):
-
     if not config.has_pin():
         return Failure()
 
@@ -16,6 +15,6 @@ async def control_baking(ctx, msg):
         if not wire.is_baking():
             await layout.require_confirm_baking(ctx)
             wire.tezos_remove_handelrs()
-            return  Success(message="Baking mode activated")
+            return Success(message="Baking mode activated")
         else:
             return Success(message="Trezor is already in baking mode")
