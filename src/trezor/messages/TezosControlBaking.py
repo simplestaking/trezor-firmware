@@ -6,14 +6,3 @@ import protobuf as p
 class TezosControlBaking(p.MessageType):
     MESSAGE_WIRE_TYPE = 158
 
-    def __init__(
-        self,
-        baking: bool = None,
-    ) -> None:
-        self.baking = baking
-
-    @classmethod
-    def get_fields(cls):
-        return {
-            1: ('baking', p.BoolType, 0),
-        }

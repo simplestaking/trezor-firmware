@@ -1,20 +1,30 @@
 from trezor import config, wire
 from trezor.messages.Failure import Failure
 from trezor.messages.Success import Success
-from trezor.pin import pin_to_int
+from trezor.messages import MessageType
 
-from apps.common.request_pin import request_pin
-from apps.tezos import helpers, layout
+from apps.tezos import ns, helpers, layout
+from apps.homescreen import homescreen
+
+# list of messages used in Tezos baking
+tezos_baking_allowed_messages = [
+    MessageType.Initialize,
+    MessageType.TezosGetAddress,
+    MessageType.TezosGetPublicKey,
+]
 
 
 async def control_baking(ctx, msg):
     if not config.has_pin():
         return Failure()
 
-    if msg.baking is True:
-        if not wire.is_baking():
-            await layout.require_confirm_baking(ctx)
-            wire.tezos_remove_handelrs()
-            return Success(message="Baking mode activated")
-        else:
-            return Success(message="Trezor is already in baking mode")
+    await layout.require_confirm_baking(ctx)
+
+    # remove unused handlers
+    wire.clear_handlers(tezos_baking_allowed_messages)
+
+    # register the baker singing message
+    wire.add(MessageType.TezosSignBakerOp, "apps.tezos", "sign_baker_op", ns)
+    homescreen.set_baking()
+
+    return Success(message="Baking mode activated")

@@ -8,7 +8,6 @@ from trezor.wire.errors import *
 from apps.common import seed
 
 workflow_handlers = {}
-tezos_baking_allowed_messages = [0, 150, 154, 156, 158]
 
 
 def add(mtype, pkgname, modname, namespace=None):
@@ -215,12 +214,8 @@ async def unexpected_msg(ctx, reader):
     )
 
 
-def tezos_remove_handelrs():
+def clear_handlers(keep: list):
     # remove all handlers, except the ones used in tezos baking
     for handler in workflow_handlers.keys():
-        if handler not in tezos_baking_allowed_messages:
+        if handler not in keep:
             workflow_handlers.pop(handler, None)
-
-
-def is_baking():
-    return len(workflow_handlers) == len(tezos_baking_allowed_messages)

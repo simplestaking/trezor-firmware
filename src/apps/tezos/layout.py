@@ -70,7 +70,8 @@ async def require_confirm_baking(ctx):
     text.normal("are allowed")
     return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
-async def show_endorsement_operation(msg):
+
+def show_endorsement_operation(msg):
     ui.display.clear()
     text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
     text.normal("")
@@ -81,7 +82,8 @@ async def show_endorsement_operation(msg):
     text.render()
     ui.display.backlight(ui.BACKLIGHT_NORMAL)
 
-async def show_baking_operation(msg):
+
+def show_baking_operation(msg):
     ui.display.clear()
     text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
     text.normal("")

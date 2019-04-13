@@ -6,15 +6,14 @@ from trezor.crypto.curve import ed25519
 from trezor.messages.TezosSignedBakerOp import TezosSignedBakerOp
 from trezor.messages.Failure import Failure
 
-from apps.common import paths
-from apps.tezos import helpers, layout, writers
-from apps.tezos.writers import (
-    write_bool,
+
+from apps.tezos import CURVE, helpers, layout
+from apps.common.writers import (
     write_bytes,
     write_uint8,
-    write_uint16,
-    write_uint32,
-    write_uint64,
+    write_uint16_be,
+    write_uint32_be,
+    write_uint64_be,
 )
 
 BLOCK_WATERMARK = const(1)
@@ -28,40 +27,38 @@ async def sign_baker_op(ctx, msg, keychain):
     if not helpers.validate_full_path(msg.address_n):
         return Failure()
 
-    node = keychain.derive(msg.address_n, helpers.TEZOS_CURVE)
-
-    if not wire.is_baking():
-        raise wire.DataError("Invalid operation")
+    node = keychain.derive(msg.address_n, CURVE)
 
     sig_prefixed = await _sign(ctx, node, msg)
 
     return TezosSignedBakerOp(signature=sig_prefixed)
 
 
-def _get_operation_bytes(w: bytearray, msg):
+def _write_operation_bytes(w: bytearray, msg):
+
     if msg.endorsement is not None:
         write_uint8(w, ENDORSEMENT_WATERMARK)
         write_bytes(w, msg.chain_id)
         write_bytes(w, msg.endorsement.branch)
         write_uint8(w, ENDORSEMENT_TAG)
-        write_uint32(w, msg.endorsement.level)
+        write_uint32_be(w, msg.endorsement.level)
 
     elif msg.block_header is not None:
         write_uint8(w, BLOCK_WATERMARK)
         write_bytes(w, msg.chain_id)
-        write_uint32(w, msg.block_header.level)
+        write_uint32_be(w, msg.block_header.level)
         write_uint8(w, msg.block_header.proto)
         write_bytes(w, msg.block_header.predecessor)
-        write_uint64(w, msg.block_header.timestamp)
+        write_uint64_be(w, msg.block_header.timestamp)
         write_uint8(w, msg.block_header.validation_pass)
         write_bytes(w, msg.block_header.operations_hash)
-        write_uint32(w, msg.block_header.bytes_in_field_fitness)
-        write_uint32(w, msg.block_header.bytes_in_next_field)
+        write_uint32_be(w, msg.block_header.bytes_in_field_fitness)
+        write_uint32_be(w, msg.block_header.bytes_in_next_field)
         write_bytes(w, msg.block_header.fitness)
         write_bytes(w, msg.block_header.context)
-        write_uint16(w, msg.block_header.priority)
+        write_uint16_be(w, msg.block_header.priority)
         write_bytes(w, msg.block_header.proof_of_work_nonce)
-        write_bool(w, msg.block_header.presence_of_field_seed_nonce_hash)
+        helpers.write_bool(w, msg.block_header.presence_of_field_seed_nonce_hash)
         if msg.block_header.seed_nonce_hash:
             write_bytes(w, msg.block_header.seed_nonce_hash)
 
@@ -69,7 +66,7 @@ def _get_operation_bytes(w: bytearray, msg):
 async def _sign(ctx, node, msg):
     h_sign = HashWriter(blake2b(outlen=32))
 
-    _get_operation_bytes(h_sign, msg)
+    _write_operation_bytes(h_sign, msg)
     wm_opbytes_hash = h_sign.get_digest()
 
     signature = ed25519.sign(node.private_key(), wm_opbytes_hash)
@@ -78,9 +75,9 @@ async def _sign(ctx, node, msg):
     )
 
     if msg.endorsement is not None:
-        await layout.show_endorsement_operation(msg)
+        layout.show_endorsement_operation(msg)
     elif msg.block_header is not None:
-        await layout.show_baking_operation(msg)
+        layout.show_baking_operation(msg)
 
     await ctx.wait(loop.sleep(4 * 1000 * 1000))
 
