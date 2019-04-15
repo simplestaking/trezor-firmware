@@ -74,11 +74,12 @@ async def _sign(ctx, node, msg):
         signature, prefix=helpers.TEZOS_SIGNATURE_PREFIX
     )
 
-    if msg.endorsement is not None:
-        layout.show_endorsement_operation(msg)
-    elif msg.block_header is not None:
-        layout.show_baking_operation(msg)
+    if msg.show_display:
+        if msg.endorsement is not None:
+            layout.show_endorsement_operation(msg)
+        elif msg.block_header is not None:
+            layout.show_baking_operation(msg)
 
-    await ctx.wait(loop.sleep(4 * 1000 * 1000))
+        await ctx.wait(loop.sleep(4 * 1000 * 1000))
 
     return sig_prefixed

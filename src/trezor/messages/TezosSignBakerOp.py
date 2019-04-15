@@ -21,11 +21,13 @@ class TezosSignBakerOp(p.MessageType):
         chain_id: bytes = None,
         endorsement: TezosEndorsement = None,
         block_header: TezosBlockHeader = None,
+        show_display: bool = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
         self.chain_id = chain_id
         self.endorsement = endorsement
         self.block_header = block_header
+        self.show_display = show_display
 
     @classmethod
     def get_fields(cls):
@@ -34,4 +36,5 @@ class TezosSignBakerOp(p.MessageType):
             2: ('chain_id', p.BytesType, 0),
             3: ('endorsement', TezosEndorsement, 0),
             4: ('block_header', TezosBlockHeader, 0),
+            5: ('show_display', p.BoolType, 0),
         }
