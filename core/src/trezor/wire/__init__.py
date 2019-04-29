@@ -1,5 +1,7 @@
+from micropython import const
+
 import protobuf
-from trezor import log, loop, messages, utils, workflow
+from trezor import config, log, loop, messages, utils, wire, workflow
 from trezor.wire import codec_v1
 from trezor.wire.errors import *
 
@@ -161,6 +163,7 @@ async def protobuf_workflow(ctx, reader, handler, *args):
     from trezor.messages.Failure import Failure
 
     req = await protobuf.load_message(reader, messages.get_type(reader.type))
+
     try:
         res = await handler(ctx, req, *args)
     except UnexpectedMessageError:
@@ -209,3 +212,10 @@ async def unexpected_msg(ctx, reader):
     await ctx.write(
         Failure(code=FailureType.UnexpectedMessage, message="Unexpected message")
     )
+
+
+def clear_handlers(keep: list):
+    # remove all handlers, except the ones used in tezos baking
+    for handler in workflow_handlers.keys():
+        if handler not in keep:
+            workflow_handlers.pop(handler, None)

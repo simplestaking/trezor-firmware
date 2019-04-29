@@ -67,6 +67,39 @@ async def require_confirm_register_delegate(ctx, address, fee):
     await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
+async def require_confirm_baking(ctx):
+    text = Text("Start Tezos baking", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("When baking mode is ")
+    text.normal("enabled, only baking &")
+    text.normal("endorsement operations")
+    text.normal("are allowed")
+    return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
+
+
+def show_endorsement_operation(msg):
+    ui.display.clear()
+    text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("")
+    text.bold("Level:")
+    text.normal(str(msg.endorsement.level))
+    text.bold("Type:")
+    text.normal("Endorsement")
+    text.render()
+    ui.display.backlight(ui.BACKLIGHT_NORMAL)
+
+
+def show_baking_operation(msg):
+    ui.display.clear()
+    text = Text("Operation signed", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("")
+    text.bold("Level:")
+    text.normal(str(msg.block_header.level))
+    text.bold("Type:")
+    text.normal("Baking")
+    text.render()
+    ui.display.backlight(ui.BACKLIGHT_NORMAL)
+
+
 def split_address(address):
     return chunks(address, 18)
 

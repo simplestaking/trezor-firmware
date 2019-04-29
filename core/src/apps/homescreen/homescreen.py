@@ -1,6 +1,7 @@
-from trezor import config, io, loop, res, ui
-
+from trezor import config, io, loop, res, ui, wire
 from apps.common import storage
+
+TEZOS_BAKING = False
 
 
 async def homescreen():
@@ -48,7 +49,22 @@ def display_homescreen():
             ui.WIDTH // 2, 22, "PIN NOT SET!", ui.BOLD, ui.BLACK, ui.YELLOW
         )
         ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
+    elif is_baking():
+        ui.display.bar(0, 0, ui.WIDTH, 30, ui.GREEN)
+        ui.display.text_center(
+            ui.WIDTH // 2, 22, "TEZOS BAKING", ui.BOLD, ui.WHITE, ui.GREEN
+        )
+        ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
     else:
         ui.display.bar(0, 0, ui.WIDTH, ui.HEIGHT, ui.BG)
     ui.display.avatar(48, 48 - 10, image, ui.WHITE, ui.BLACK)
     ui.display.text_center(ui.WIDTH // 2, 220, label, ui.BOLD, ui.FG, ui.BG)
+
+
+def is_baking():
+    return TEZOS_BAKING
+
+
+def set_baking():
+    global TEZOS_BAKING
+    TEZOS_BAKING = True

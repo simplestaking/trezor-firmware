@@ -68,6 +68,7 @@ def validate_full_path(path: list) -> bool:
 
 def write_bool(w: bytearray, boolean: bool):
     if boolean:
+
         write_uint8(w, 255)
     else:
         write_uint8(w, 0)
