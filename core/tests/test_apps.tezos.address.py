@@ -54,7 +54,6 @@ class TestTezosAddress(unittest.TestCase):
             [44 | HARDENED, 1729 | HARDENED, 9999000 | HARDENED],
             [44 | HARDENED, 60 | HARDENED, 0 | HARDENED, 0, 0],
             [1 | HARDENED, 1 | HARDENED, 1 | HARDENED],
-            [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED, 1, 0 | HARDENED],
         ]
         correct_paths = [
             [44 | HARDENED, 1729 | HARDENED, 0 | HARDENED],
