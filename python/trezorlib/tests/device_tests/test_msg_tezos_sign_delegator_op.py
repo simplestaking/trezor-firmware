@@ -35,66 +35,22 @@ TEZOS_PATH = "m/44'/1729'/10'"              #path is set to address 10 due testi
 @pytest.mark.skip_t1
 class TestMsgTezosSignDelegatorOp(TrezorTest):
 
-    def setup_mnemonic_pin_nopassphrase(self):
-        # we need a pin and also the 12*all mnemonic
-        self._setup_mnemonic(mnemonic=TrezorTest.mnemonic_all, pin=TrezorTest.pin4)
-
+    # more tests to come, I will add them, when the workflow is finalized
     def test_tezos_delegator_sign_block(self):
-        self.setup_mnemonic_pin_nopassphrase()
+        self.setup_mnemonic_allallall()
 
         control_staking(self.client, True)
         res = self.sign_block_header()
 
         assert res.signature == "edsigtXzJQLfhaPk3Hd3UGYy9q88LyDPFg9Fx8ofULYVSZKKeSzHUH7gzUzVDtcBQPEFL5Uxo31qLWqn6As4pKcT7cj4R1HCFFF"
 
-    def test_tezos_delegator_sign_endorsement(self):
-        self.setup_mnemonic_pin_nopassphrase()
-
-        control_staking(self.client, True)
-        res = self.sign_endorsement()
-
-        assert res.signature == "edsigtzzRYUQ5pEwri2gWRPyVpGKsazK8qaRaGiTwmaVET5KMZ16aC78YVDg7ym5NMLt6FnhMmUD96CEa9zVnGg7tcpzAphK8XM"
-
-    def test_tezos_delegator_sign_block_nonce(self):
-        self.setup_mnemonic_pin_nopassphrase()
-
-        control_staking(self.client, True)
         res = self.sign_block_with_nonce()
 
         assert res.signature == "edsigtqLXgHP3pzzYDLSVgN9ie1NV7E9L671ZbWBLyNYmsTgj1kZk8WAvto4YrtQLK4WQ1eEuye4uKHj3CuWsyfGsBY7LJTf9uz"
 
-    def test_tezos_staking_start(self):
-        self.setup_mnemonic_allallall()
-        # with no PIN
-        with pytest.raises(TrezorFailure):
-            res = control_staking(self.client, True)
-            assert isinstance(res, proto.Failure)
+        res = self.sign_endorsement()
 
-        device.wipe(self.client)
-
-        # with PIN
-        self.setup_mnemonic_pin_nopassphrase()
-
-        res = control_staking(self.client, True)
-        assert isinstance(res, proto.Success)
-
-    def test_tezos_stakaing_not_permited(self):
-        self.setup_mnemonic_pin_nopassphrase()
-
-        with pytest.raises(TrezorFailure):
-            self.sign_endorsement()
-
-    def test_tezos_deny_operation(self):
-        """
-        When in staking mode, only the messages needed for the signing operation are allowed
-        """
-        self.setup_mnemonic_pin_nopassphrase()
-        control_staking(self.client, True)
-
-        with pytest.raises(TrezorFailure):
-            path = parse_path(TEZOS_PATH)
-            get_address(self.client, path, show_display=True)
-        device.wipe(self.client)
+        assert res.signature == "edsigtzzRYUQ5pEwri2gWRPyVpGKsazK8qaRaGiTwmaVET5KMZ16aC78YVDg7ym5NMLt6FnhMmUD96CEa9zVnGg7tcpzAphK8XM"
 
     def sign_block_with_nonce(self):
         res = sign_delegator_op(
