@@ -1789,6 +1789,19 @@ def tezos_sign_tx(connect, address, file):
     return tezos.sign_tx(client, address_n, msg)
 
 
+@cli.command(help="Start Tezos Baking mode")
+@click.pass_obj
+def tezos_start_baking(connect):
+    client = connect()
+    return tezos.control_baking(client)
+
+
+@cli.command(help="Stop Tezos Baking mode")
+@click.pass_obj
+def tezos_stop_baking(connect):
+    client = connect()
+    return tezos.control_baking(client, stake=False)
+
 #
 # Ontology functions
 #
