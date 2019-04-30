@@ -1,10 +1,10 @@
-from trezor import config, wire
+from trezor import config, wire, workflow
 from trezor.messages.Failure import Failure
 from trezor.messages.Success import Success
 from trezor.messages import MessageType
 
 from apps.tezos import ns, helpers, layout
-from apps.homescreen import homescreen
+from apps.tezos.baking_homescreen import baking_homescreen
 
 # list of messages used in Tezos baking
 tezos_baking_allowed_messages = [
@@ -25,6 +25,11 @@ async def control_baking(ctx, msg):
 
     # register the baker singing message
     wire.add(MessageType.TezosSignBakerOp, "apps.tezos", "sign_baker_op", ns)
-    homescreen.set_baking()
+    #homescreen.set_baking()
+
+    helpers.set_last_level(0)
+
+    workflow.closedefault()
+    workflow.startdefault(baking_homescreen)
 
     return Success(message="Baking mode activated")
