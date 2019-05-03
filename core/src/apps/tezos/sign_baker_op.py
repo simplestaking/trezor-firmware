@@ -74,17 +74,12 @@ async def _sign(ctx, node, msg):
         signature, prefix=helpers.TEZOS_SIGNATURE_PREFIX
     )
 
-    print(msg.show_display)
-
     if msg.show_display:
-        print("Show display")
         if msg.endorsement is not None:
             helpers.set_last_level(msg.endorsement.level)
             helpers.set_last_type(ENDORSEMENT_WATERMARK)
         elif msg.block_header is not None:
             helpers.set_last_level(msg.block_header.level)
             helpers.set_last_type(BLOCK_WATERMARK)
-
-        # await ctx.wait(loop.sleep(4 * 1000 * 1000))
 
     return sig_prefixed

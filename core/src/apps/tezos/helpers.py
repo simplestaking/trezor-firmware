@@ -83,8 +83,10 @@ def write_bool(w: bytearray, boolean: bool):
 
 
 def get_last_level():
-    # return int.from_bytes(config.get(_TEZOS, _LEVEL), 'big')
-    return int.from_bytes(config.get(_TEZOS, _LEVEL, True), 'big')
+    level = config.get(_TEZOS, _LEVEL, True)
+    if not level:
+        return 0
+    return int.from_bytes(level, 'big')
 
 
 def set_last_level(level):
@@ -92,7 +94,9 @@ def set_last_level(level):
 
 
 def get_last_type():
-    op_type = int.from_bytes(config.get(_TEZOS, _TYPE, True), 'big')
+    op_type = config.get(_TEZOS, _TYPE, True)
+    if not op_type:
+        return "None"
     return "Block" if op_type == 1 else "Endorsement"
 
 
