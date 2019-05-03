@@ -78,7 +78,3 @@ def split_address(address):
 def format_tezos_amount(value):
     formatted_value = format_amount(value, TEZOS_AMOUNT_DIVISIBILITY)
     return formatted_value + " XTZ"
-
-
-def get_operation(wm):
-    return "Block" if wm == 1 else "Endorsement"

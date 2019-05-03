@@ -97,6 +97,7 @@ def get_last_type():
     op_type = config.get(_TEZOS, _TYPE, True)
     if not op_type:
         return "None"
+    op_type = int.from_bytes(op_type, 'big')
     return "Block" if op_type == 1 else "Endorsement"
 
 

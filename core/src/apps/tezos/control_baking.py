@@ -25,10 +25,8 @@ async def control_baking(ctx, msg):
 
     # register the baker singing message
     wire.add(MessageType.TezosSignBakerOp, "apps.tezos", "sign_baker_op", ns)
-    # homescreen.set_baking()
 
-    # helpers.set_last_level(0)
-
+    # start a new homescreen
     workflow.closedefault()
     workflow.startdefault(baking_homescreen)
 

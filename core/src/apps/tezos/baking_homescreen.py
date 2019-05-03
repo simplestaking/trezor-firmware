@@ -19,7 +19,6 @@ async def baking_homescreen():
 def display_baking_homescreen():
     ui.display.clear()
 
-    # TODO - fix the overlapping bar
     ui.display.bar(0, 0, ui.WIDTH, 30, ui.GREEN)
     ui.display.text_center(
         ui.WIDTH // 2, 22, "TEZOS BAKING", ui.BOLD, ui.WHITE, ui.GREEN
