@@ -26,7 +26,7 @@ def display_baking_homescreen():
     )
     ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
 
-    text = Text("Last Operation", ui.ICON_SEND, icon_color=ui.GREEN)
+    text = Text("", None)
     text.normal("")
     text.bold("Level:")
     text.normal(str(helpers.get_last_level()))
