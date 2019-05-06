@@ -25,11 +25,18 @@ def display_baking_homescreen():
     )
     ui.display.bar(0, 30, ui.WIDTH, ui.HEIGHT - 30, ui.BG)
 
+    op_type = helpers.get_last_type()
+
+    if op_type == "Block":
+        level = str(helpers.get_last_block_level())
+    elif op_type == "Endorsement":
+        level = str(helpers.get_last_endorsement_level())
+
     text = Text("", None)
     text.normal("")
     text.bold("Level:")
-    text.normal(str(helpers.get_last_level()))
+    text.normal(level)
     text.bold("Type:")
-    text.normal(helpers.get_last_type())
+    text.normal(op_type)
     text.render()
     ui.display.backlight(ui.BACKLIGHT_NORMAL)

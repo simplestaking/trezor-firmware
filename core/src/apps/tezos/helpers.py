@@ -9,8 +9,9 @@ from apps.common.writers import write_uint8
 
 
 _TEZOS = const(0x05)  # Tezos namespace
-_LEVEL = const(0x01)  # Key for level
 _TYPE = const(0x2)    # Key for operation type
+_BLOCK_LEVEL = const(0x01)  # Key for level
+_ENDORSEMENT_LEVEL = const(0x2)
 
 
 TEZOS_AMOUNT_DIVISIBILITY = const(6)
@@ -82,15 +83,26 @@ def write_bool(w: bytearray, boolean: bool):
         write_uint8(w, 0)
 
 
-def get_last_level():
-    level = config.get(_TEZOS, _LEVEL, True)
+def get_last_block_level():
+    level = config.get(_TEZOS, _BLOCK_LEVEL, True)
     if not level:
         return 0
     return int.from_bytes(level, 'big')
 
 
-def set_last_level(level):
-    config.set(_TEZOS, _LEVEL, level.to_bytes(4, 'big'), True)
+def get_last_endorsement_level():
+    level = config.get(_TEZOS, _ENDORSEMENT_LEVEL, True)
+    if not level:
+        return 0
+    return int.from_bytes(level, 'big')
+
+
+def set_last_block_level(level):
+    config.set(_TEZOS, _BLOCK_LEVEL, level.to_bytes(4, 'big'), True)
+
+
+def set_last_endoresement_level(level):
+    config.set(_TEZOS, _ENDORSEMENT_LEVEL, level.to_bytes(4, 'big'), True)
 
 
 def get_last_type():

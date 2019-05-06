@@ -27,6 +27,17 @@ async def sign_baker_op(ctx, msg, keychain):
     if not helpers.validate_full_path(msg.address_n):
         return Failure()
 
+    # the level should be greater than the last signed, with this check we avoid double baking/endorsement
+    # TODO: analyze double endorsement more in depth, endorsements with the same level doesnt mean double endorsement
+    # if msg.endorsement and helpers.get_last_endorsement_level() > msg.endorsement.level:
+    #     return Failure()
+    # helpers.set_last_block_level(1)
+    # return
+
+    if msg.block_header and helpers.get_last_block_level() >= msg.block_header.level:
+        print("Potential double signing")
+        return Failure()
+
     node = keychain.derive(msg.address_n, CURVE)
 
     sig_prefixed = await _sign(ctx, node, msg)
@@ -76,10 +87,10 @@ async def _sign(ctx, node, msg):
 
     if msg.show_display:
         if msg.endorsement is not None:
-            helpers.set_last_level(msg.endorsement.level)
+            helpers.set_last_endorsement_level(msg.endorsement.level)
             helpers.set_last_type(ENDORSEMENT_WATERMARK)
         elif msg.block_header is not None:
-            helpers.set_last_level(msg.block_header.level)
+            helpers.set_last_block_level(msg.block_header.level)
             helpers.set_last_type(BLOCK_WATERMARK)
 
     return sig_prefixed
