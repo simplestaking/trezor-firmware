@@ -12,11 +12,12 @@ from apps.common.confirm import require_confirm, require_hold_to_confirm
 from apps.tezos.helpers import TEZOS_AMOUNT_DIVISIBILITY
 
 
-async def require_confirm_tx(ctx, to, value):
+async def require_confirm_tx(ctx, to, value, fee):
     text = Text("Confirm sending", ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold(format_tezos_amount(value))
-    text.normal("to")
+    text.bold(format_tezos_amount(value) + " to")
+    # text.normal("to")
     text.mono(*split_address(to))
+    text.bold("Fee: " + format_tezos_amount(fee))
     return await require_confirm(ctx, text, ButtonRequestType.SignTx)
 
 

@@ -22,10 +22,10 @@ async def sign_tx(ctx, msg, keychain):
 
     if msg.transaction is not None:
         to = _get_address_from_contract(msg.transaction.destination)
-        await layout.require_confirm_tx(ctx, to, msg.transaction.amount)
-        await layout.require_confirm_fee(
-            ctx, msg.transaction.amount, msg.transaction.fee
-        )
+        await layout.require_confirm_tx(ctx, to, msg.transaction.amount, msg.transaction.fee)
+        # await layout.require_confirm_fee(
+        #     ctx, msg.transaction.amount, msg.transaction.fee
+        # )
 
     elif msg.origination is not None:
         source = _get_address_from_contract(msg.origination.source)
