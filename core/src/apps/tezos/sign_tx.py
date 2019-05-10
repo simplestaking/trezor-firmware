@@ -21,11 +21,14 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        to = _get_address_from_contract(msg.transaction.destination)
-        await layout.require_confirm_tx(ctx, to, msg.transaction.amount, msg.transaction.fee)
+        # to = _get_address_from_contract(msg.transaction[0].destination)
+        # await layout.require_confirm_tx(ctx, to, msg.transaction[0].amount, msg.transaction[0].fee)
         # await layout.require_confirm_fee(
         #     ctx, msg.transaction.amount, msg.transaction.fee
         # )
+        # TODO: test on zeronet
+        destinations = [_get_address_from_contract(t.destination) for t in msg.transaction]
+        await layout.require_confirm_transaction(ctx, msg.transaction, destinations)
 
     elif msg.origination is not None:
         source = _get_address_from_contract(msg.origination.source)
@@ -138,10 +141,11 @@ def _get_operation_bytes(w: bytearray, msg):
 
     # transaction operation
     if msg.transaction is not None:
-        _encode_common(w, msg.transaction, "transaction")
-        _encode_zarith(w, msg.transaction.amount)
-        _encode_contract_id(w, msg.transaction.destination)
-        _encode_data_with_bool_prefix(w, msg.transaction.parameters)
+        for transaction in msg.transaction:
+            _encode_common(w, transaction, "transaction")
+            _encode_zarith(w, transaction.amount)
+            _encode_contract_id(w, transaction.destination)
+            _encode_data_with_bool_prefix(w, transaction.parameters)
     # origination operation
     elif msg.origination is not None:
         _encode_common(w, msg.origination, "origination")

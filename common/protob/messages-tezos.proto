@@ -52,7 +52,7 @@ message TezosSignTx {
     optional bytes branch = 2;
 
     optional TezosRevealOp reveal = 3;              // Tezos reveal operation (may be bundled with other op)
-    optional TezosTransactionOp transaction = 4;    // Tezos transaction operation
+    repeated TezosTransactionOp transaction = 4;    // Tezos transaction operation
     optional TezosOriginationOp origination = 5;    // Tezos origination operation
     optional TezosDelegationOp delegation = 6;      // Tezos delegation operation
     optional TezosProposalOp proposal = 7;          // Tezos proposal operation
@@ -145,6 +145,10 @@ message TezosSignTx {
             Pass = 2;
         }
     }
+//
+//    message TezosMultiTransactionOp {
+//        repeated TezosTransactionOp transactions = 1;
+//    }
 }
 
 /**

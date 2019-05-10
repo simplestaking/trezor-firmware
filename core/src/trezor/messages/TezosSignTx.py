@@ -24,7 +24,7 @@ class TezosSignTx(p.MessageType):
         address_n: List[int] = None,
         branch: bytes = None,
         reveal: TezosRevealOp = None,
-        transaction: TezosTransactionOp = None,
+        transaction: List[TezosTransactionOp] = None,
         origination: TezosOriginationOp = None,
         delegation: TezosDelegationOp = None,
         proposal: TezosProposalOp = None,
@@ -33,7 +33,7 @@ class TezosSignTx(p.MessageType):
         self.address_n = address_n if address_n is not None else []
         self.branch = branch
         self.reveal = reveal
-        self.transaction = transaction
+        self.transaction = transaction if transaction is not None else []
         self.origination = origination
         self.delegation = delegation
         self.proposal = proposal
@@ -45,7 +45,7 @@ class TezosSignTx(p.MessageType):
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
             2: ('branch', p.BytesType, 0),
             3: ('reveal', TezosRevealOp, 0),
-            4: ('transaction', TezosTransactionOp, 0),
+            4: ('transaction', TezosTransactionOp, p.FLAG_REPEATED),
             5: ('origination', TezosOriginationOp, 0),
             6: ('delegation', TezosDelegationOp, 0),
             7: ('proposal', TezosProposalOp, 0),
