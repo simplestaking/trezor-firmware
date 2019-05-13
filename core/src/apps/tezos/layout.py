@@ -12,12 +12,21 @@ from apps.common.confirm import require_confirm, require_hold_to_confirm
 from apps.tezos.helpers import TEZOS_AMOUNT_DIVISIBILITY
 
 
-async def require_confirm_tx(ctx, to, value, fee):
+async def require_confirm_tx(ctx, to, value):
     text = Text("Confirm sending", ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold(format_tezos_amount(value) + " to")
+    text.bold(format_tezos_amount(value))
+    text.normal("to")
     text.mono(*split_address(to))
-    text.bold("Fee: " + format_tezos_amount(fee))
     return await require_confirm(ctx, text, ButtonRequestType.SignTx)
+
+
+async def require_confirm_fee(ctx, value, fee):
+    text = Text("Confirm transaction", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.normal("Amount:")
+    text.bold(format_tezos_amount(value))
+    text.normal("Fee:")
+    text.bold(format_tezos_amount(fee))
+    await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
 async def require_confirm_origination(ctx, address):
@@ -59,7 +68,7 @@ async def require_confirm_register_delegate(ctx, address, fee):
 
 
 def split_address(address):
-    return chunks(address, 18)
+    return chunks(address, 17)
 
 
 def split_proposal(proposal):
@@ -106,7 +115,7 @@ async def show_proposal_page(page: int, page_count: int, pages: list, title: str
         await animate_swipe()
 
 
-async def require_confirm_transaction(ctx, transactions, destinations):
+async def require_confirm_batch_transaction(ctx, transactions, destinations):
     await ctx.call(ButtonRequest(code=ButtonRequestType.SignTx), MessageType.ButtonAck)
     first = const(0)
     pages = transactions
@@ -117,9 +126,7 @@ async def require_confirm_transaction(ctx, transactions, destinations):
 
 @ui.layout
 async def show_transaction_page(page: int, page_count: int, pages: list, title: str, destinations: list):
-    text = Text(title, ui.ICON_SEND, icon_color=ui.PURPLE)
-    # text.bold("Proposal {}: ".format(page + 1))
-    # text.mono(*split_proposal(pages[page]))
+    text = Text(title, ui.ICON_SEND, icon_color=ui.GREEN)
     text.bold(format_tezos_amount(pages[page].amount) + " to")
     text.mono(*split_address(destinations[page]))
     text.bold("Fee: " + format_tezos_amount(pages[page].fee))
