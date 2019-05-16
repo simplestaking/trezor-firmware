@@ -8,14 +8,17 @@ class TezosEndorsement(p.MessageType):
     def __init__(
         self,
         branch: bytes = None,
+        slot: int = None,
         level: int = None,
     ) -> None:
         self.branch = branch
+        self.slot = slot
         self.level = level
 
     @classmethod
     def get_fields(cls):
         return {
             1: ('branch', p.BytesType, 0),
-            2: ('level', p.UVarintType, 0),
+            2: ('slot', p.UVarintType, 0),
+            3: ('level', p.UVarintType, 0),
         }

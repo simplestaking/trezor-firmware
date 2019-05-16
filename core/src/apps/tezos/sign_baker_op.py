@@ -48,10 +48,12 @@ async def sign_baker_op(ctx, msg, keychain):
 def _write_operation_bytes(w: bytearray, msg):
 
     if msg.endorsement is not None:
+        print(msg.endorsement.slot)
         write_uint8(w, ENDORSEMENT_WATERMARK)
         write_bytes(w, msg.chain_id)
         write_bytes(w, msg.endorsement.branch)
         write_uint8(w, ENDORSEMENT_TAG)
+        write_uint8(w, msg.endorsement.slot)
         write_uint32_be(w, msg.endorsement.level)
 
     elif msg.block_header is not None:

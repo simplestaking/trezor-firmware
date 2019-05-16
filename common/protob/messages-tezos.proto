@@ -179,7 +179,8 @@ message TezosSignBakerOp {
         optional bytes branch = 1;
         //force set the tag
         //optional uint64 tag = 2;
-        optional uint64 level = 2;
+        optional uint64 slot = 2;
+        optional uint64 level = 3;
     }
 
     /**
