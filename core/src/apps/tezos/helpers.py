@@ -101,7 +101,7 @@ def set_last_block_level(level):
     config.set(_TEZOS, _BLOCK_LEVEL, level.to_bytes(4, 'big'), True)
 
 
-def set_last_endoresement_level(level):
+def set_last_endorsement_level(level):
     config.set(_TEZOS, _ENDORSEMENT_LEVEL, level.to_bytes(4, 'big'), True)
 
 
