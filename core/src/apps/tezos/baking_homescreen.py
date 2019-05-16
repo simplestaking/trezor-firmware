@@ -31,9 +31,11 @@ def display_baking_homescreen():
         level = str(helpers.get_last_block_level())
     elif op_type == "Endorsement":
         level = str(helpers.get_last_endorsement_level())
+    else:
+        level = "No operation signed yet"
 
     text = Text("", None)
-    text.normal("")
+    text.bold("Last operation signed")
     text.bold("Level:")
     text.normal(level)
     text.bold("Type:")
