@@ -118,7 +118,9 @@ async def show_proposal_page(page: int, page_count: int, pages: list, title: str
 async def require_confirm_batch_transaction(ctx, transactions, destinations):
     await ctx.call(ButtonRequest(code=ButtonRequestType.SignTx), MessageType.ButtonAck)
     first = const(0)
-    pages = transactions
+
+    # transactions consist of 2 different screens each
+    pages = transactions * 2
     # TODO: fix the overlapping "scroolbar" on the right side of the display
     paginator = paginate(show_transaction_page, len(pages), first, pages, "Confirm sending", destinations)
     return await ctx.wait(paginator)
@@ -127,15 +129,25 @@ async def require_confirm_batch_transaction(ctx, transactions, destinations):
 @ui.layout
 async def show_transaction_page(page: int, page_count: int, pages: list, title: str, destinations: list):
     text = Text(title, ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold(format_tezos_amount(pages[page].amount) + " to")
-    text.mono(*split_address(destinations[page]))
-    text.bold("Fee: " + format_tezos_amount(pages[page].fee))
-    content = Scrollpage(text, page, page_count)
+    text.bold(format_tezos_amount(pages[page // 2].amount))
+    text.normal("to")
+    text.mono(*split_address(destinations[page // 2]))
+    content_1 = Scrollpage(text, page, page_count)
+
+    text_fee = Text("Confirm transaction", ui.ICON_SEND, icon_color=ui.GREEN)
+    text_fee.normal("Amount:")
+    text_fee.bold(format_tezos_amount(pages[page // 2 - 1].amount))
+    text_fee.normal("Fee:")
+    text_fee.bold(format_tezos_amount(pages[page // 2 - 1].fee))
+    content_2 = Scrollpage(text_fee, page, page_count)
 
     if page + 1 >= page_count:
-        confirm = await ConfirmDialog(content)
+        confirm = await ConfirmDialog(content_2)
         if confirm == CANCELLED:
             raise wire.ActionCancelled("Cancelled")
     else:
-        content.render()
+        if page % 2 == 0:
+            content_1.render()
+        else:
+            content_2.render()
         await animate_swipe()
