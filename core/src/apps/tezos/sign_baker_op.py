@@ -35,8 +35,7 @@ async def sign_baker_op(ctx, msg, keychain):
     # return
 
     if msg.block_header and helpers.get_last_block_level() >= msg.block_header.level:
-        print("Potential double signing")
-        return Failure()
+        raise wire.DataError("Potential double signing")
 
     node = keychain.derive(msg.address_n, CURVE)
 
