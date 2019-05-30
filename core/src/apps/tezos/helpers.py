@@ -9,9 +9,9 @@ from apps.common.writers import write_uint8
 
 
 _TEZOS = const(0x05)  # Tezos namespace
-_TYPE = const(0x2)    # Key for operation type
+_TYPE = const(0x00)    # Key for operation type
 _BLOCK_LEVEL = const(0x01)  # Key for level
-_ENDORSEMENT_LEVEL = const(0x3)
+_ENDORSEMENT_LEVEL = const(0x2)
 
 
 TEZOS_AMOUNT_DIVISIBILITY = const(6)
