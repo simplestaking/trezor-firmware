@@ -346,3 +346,77 @@ class TestMsgTezosSignTx(TrezorTest):
             resp.signature
             == "edsigu6YX7EegPwrpcEbdNQsNhrRiEagBNGJBmFamP4mixZZw1UynhahGQ8RNiZLSUVLERUZwygrsSVenBqXGt9VnknTxtzjKzv"
         )
+
+    def test_tezos_sign_tx_batch_transaction(self):
+        self.setup_mnemonic_allallall()
+
+        resp = tezos.sign_tx(
+            self.client,
+            TEZOS_PATH_10,
+            dict_to_proto(
+                messages.TezosSignTx,
+                {
+                    "branch": "db58df9b9662852c178219d8fcc6b5a6e247639e1168bd30fad7c406c116c361",
+                    "transaction": [
+                        {
+                            "source": {
+                                "tag": 0,
+                                "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                            },
+                            "fee": 12700,
+                            "counter": 8275,
+                            "gas_limit": 10200,
+                            "storage_limit": 10200,
+                            "amount": 1030000,
+                            "destination": {
+                                "tag": 0,
+                                "hash": "006690f799ad0f241720281bd6d1eec799cbc129e0",
+                            },
+                        },
+                        {
+                            "source": {
+                                "tag": 0,
+                                "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                            },
+                            "fee": 12700,
+                            "counter": 8276,
+                            "gas_limit": 10200,
+                            "storage_limit": 10200,
+                            "amount": 1030000,
+                            "destination": {
+                                "tag": 0,
+                                "hash": "007787d67ff298d18201f9e4cc010913a0e4f64e40",
+                            },
+                        },
+                        {
+                            "source": {
+                                "tag": 0,
+                                "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                            },
+                            "fee": 12700,
+                            "counter": 8277,
+                            "gas_limit": 10200,
+                            "storage_limit": 10200,
+                            "amount": 1030000,
+                            "destination": {
+                                "tag": 0,
+                                "hash": "007787d67ff298d18201f9e4cc010913a0e4f64e40",
+                            },
+                        },
+                    ],
+                }
+            )
+        )
+
+        assert (
+            resp.signature
+            == "edsigtc9FXpFL69xxDzo5opcTrwh2NjJAaMEZpdzhkTRRz5dz34VuzXdMLDi8uugdcNqD5LRTT24oay65NRm9QW5ir3Ju1wjFuB"
+        )
+        assert (
+            resp.sig_op_contents
+            == "db58df9b9662852c178219d8fcc6b5a6e247639e1168bd30fad7c406c116c3610800005f450441f41ee11eee78a31d1e1e55627c783bd69c63d340d84fd84ff0ee3e00006690f799ad0f241720281bd6d1eec799cbc129e0000800005f450441f41ee11eee78a31d1e1e55627c783bd69c63d440d84fd84ff0ee3e00007787d67ff298d18201f9e4cc010913a0e4f64e40000800005f450441f41ee11eee78a31d1e1e55627c783bd69c63d540d84fd84ff0ee3e00007787d67ff298d18201f9e4cc010913a0e4f64e400021248aed70825125805a1bc5c9768c5919a04102544737a115892fad24779ee043669bd033ec8a747e195645566d47cc8677f0a6e783b9894e45907e352dbc0a"
+        )
+        assert (
+            resp.operation_hash
+            == "ooe7wizwrqMyNgwBiJzJcFZZLZW6fLgkRNdNzTJANxHe8jR9cXE"
+        )
