@@ -21,9 +21,9 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        # TODO: test on zeronet
         if len(msg.transaction) > 1:
             destinations = [_get_address_from_contract(t.destination) for t in msg.transaction]
+            await layout.transaction_summ(ctx, len(msg.transaction), len(set(destinations)))
             await layout.require_confirm_batch_transaction(ctx, msg.transaction, destinations)
         else:
             to = _get_address_from_contract(msg.transaction[0].destination)

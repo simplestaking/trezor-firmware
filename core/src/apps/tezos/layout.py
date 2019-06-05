@@ -119,35 +119,46 @@ async def require_confirm_batch_transaction(ctx, transactions, destinations):
     await ctx.call(ButtonRequest(code=ButtonRequestType.SignTx), MessageType.ButtonAck)
     first = const(0)
 
-    # transactions consist of 2 different screens each
-    pages = transactions * 2
-    # TODO: fix the overlapping "scroolbar" on the right side of the display
-    paginator = paginate(show_transaction_page, len(pages), first, pages, "Confirm sending", destinations)
+    # 5 transactions per screen, using this "round up" method so we do not have to import math
+    page_count = len(transactions) // 5 + (len(transactions) % 5 > 0)
+    paginator = paginate(show_transaction_page, page_count, first, transactions, "Confirm sending", destinations)
     return await ctx.wait(paginator)
 
 
 @ui.layout
-async def show_transaction_page(page: int, page_count: int, pages: list, title: str, destinations: list):
+async def show_transaction_page(page: int, page_count: int, transactions: list, title: str, destinations: list):
     text = Text(title, ui.ICON_SEND, icon_color=ui.GREEN)
-    text.bold(format_tezos_amount(pages[page // 2].amount))
-    text.normal("to")
-    text.mono(*split_address(destinations[page // 2]))
-    content_1 = Scrollpage(text, page, page_count)
+    # text.normal("to")
+    # text.mono(*split_address(destinations[page // 2]))
 
-    text_fee = Text("Confirm transaction", ui.ICON_SEND, icon_color=ui.GREEN)
-    text_fee.normal("Amount:")
-    text_fee.bold(format_tezos_amount(pages[page // 2 - 1].amount))
-    text_fee.normal("Fee:")
-    text_fee.bold(format_tezos_amount(pages[page // 2 - 1].fee))
-    content_2 = Scrollpage(text_fee, page, page_count)
+    for i in range(0, 5):
+        index = page * 5 + i
+        print(index)
+        if index == len(transactions):
+            break
+        text.normal(format_tezos_amount(transactions[index].amount) + " -> " + destinations[index][:9])
+    content = Scrollpage(text, page, page_count)
+
+    # text_fee = Text("Confirm transaction", ui.ICON_SEND, icon_color=ui.GREEN)
+    # text_fee.normal("Amount:")
+    # text_fee.bold(format_tezos_amount(pages[page // 2 - 1].amount))
+    # text_fee.normal("Fee:")
+    # text_fee.bold(format_tezos_amount(pages[page // 2 - 1].fee))
+    # content_2 = Scrollpage(text_fee, page, page_count)
 
     if page + 1 >= page_count:
-        confirm = await ConfirmDialog(content_2)
+        confirm = await ConfirmDialog(content)
         if confirm == CANCELLED:
             raise wire.ActionCancelled("Cancelled")
     else:
-        if page % 2 == 0:
-            content_1.render()
-        else:
-            content_2.render()
+        content.render()
         await animate_swipe()
+
+
+async def transaction_summ(ctx, transactions, destinations):
+    text = Text("Multiple", ui.ICON_SEND, icon_color=ui.GREEN)
+    text.bold("# of transactions: ")
+    text.normal(str(transactions))
+    text.bold("# of destinations: ")
+    text.normal(str(destinations))
+    await require_confirm(ctx, text, ButtonRequestType.Other)
