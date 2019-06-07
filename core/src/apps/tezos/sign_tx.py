@@ -21,16 +21,11 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        if len(msg.transaction) > 1:
-            destinations = [_get_address_from_contract(t.destination) for t in msg.transaction]
-            await layout.transaction_summ(ctx, len(msg.transaction), len(set(destinations)))
-            await layout.require_confirm_batch_transaction(ctx, msg.transaction, destinations)
-        else:
-            to = _get_address_from_contract(msg.transaction[0].destination)
-            await layout.require_confirm_tx(ctx, to, msg.transaction[0].amount)
-            await layout.require_confirm_fee(
-                ctx, msg.transaction[0].amount, msg.transaction[0].fee
-            )
+        to = _get_address_from_contract(msg.transaction.destination)
+        await layout.require_confirm_tx(ctx, to, msg.transaction.amount)
+        await layout.require_confirm_fee(
+            ctx, msg.transaction.amount, msg.transaction.fee
+        )
 
     elif msg.origination is not None:
         source = _get_address_from_contract(msg.origination.source)
@@ -69,6 +64,11 @@ async def sign_tx(ctx, msg, keychain):
         proposed_protocol = _get_protocol_hash(msg.ballot.proposal)
         submitted_ballot = _get_ballot(msg.ballot.ballot)
         await layout.require_confirm_ballot(ctx, proposed_protocol, submitted_ballot)
+
+    elif msg.multiTrans is not None:
+        destinations = [_get_address_from_contract(t.destination) for t in msg.multiTrans]
+        await layout.transaction_summ(ctx, len(msg.multiTrans), len(set(destinations)))
+        await layout.require_confirm_batch_transaction(ctx, msg.multiTrans, destinations)
 
     else:
         raise wire.DataError("Invalid operation")
@@ -143,11 +143,10 @@ def _get_operation_bytes(w: bytearray, msg):
 
     # transaction operation
     if msg.transaction is not None:
-        for transaction in msg.transaction:
-            _encode_common(w, transaction, "transaction")
-            _encode_zarith(w, transaction.amount)
-            _encode_contract_id(w, transaction.destination)
-            _encode_data_with_bool_prefix(w, transaction.parameters)
+        _encode_transaction(w, msg.transaction)
+    elif msg.multiTrans is not None:
+        for transaction in msg.multiTrans:
+            _encode_transaction(w, transaction)
     # origination operation
     elif msg.origination is not None:
         _encode_common(w, msg.origination, "origination")
@@ -188,6 +187,13 @@ def _encode_data_with_bool_prefix(w: bytearray, data):
         write_bytes(w, data)
     else:
         helpers.write_bool(w, False)
+
+
+def _encode_transaction(w: bytearray, transaction):
+    _encode_common(w, transaction, "transaction")
+    _encode_zarith(w, transaction.amount)
+    _encode_contract_id(w, transaction.destination)
+    _encode_data_with_bool_prefix(w, transaction.parameters)
 
 
 def _encode_zarith(w: bytearray, num):

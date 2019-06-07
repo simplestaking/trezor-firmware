@@ -52,11 +52,12 @@ message TezosSignTx {
     optional bytes branch = 2;
 
     optional TezosRevealOp reveal = 3;              // Tezos reveal operation (may be bundled with other op)
-    repeated TezosTransactionOp transaction = 4;    // Tezos transaction operation
+    optional TezosTransactionOp transaction = 4;    // Tezos transaction operation
     optional TezosOriginationOp origination = 5;    // Tezos origination operation
     optional TezosDelegationOp delegation = 6;      // Tezos delegation operation
     optional TezosProposalOp proposal = 7;          // Tezos proposal operation
     optional TezosBallotOp ballot = 8;              // Tezos ballot operation
+    repeated TezosTransactionOp multiTrans = 9;     // In case of multiple transactions in one operation
     /*
      * Tezos contract ID
      */

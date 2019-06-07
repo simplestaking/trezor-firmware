@@ -24,20 +24,22 @@ class TezosSignTx(p.MessageType):
         address_n: List[int] = None,
         branch: bytes = None,
         reveal: TezosRevealOp = None,
-        transaction: List[TezosTransactionOp] = None,
+        transaction: TezosTransactionOp = None,
         origination: TezosOriginationOp = None,
         delegation: TezosDelegationOp = None,
         proposal: TezosProposalOp = None,
         ballot: TezosBallotOp = None,
+        multiTrans: List[TezosTransactionOp] = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
         self.branch = branch
         self.reveal = reveal
-        self.transaction = transaction if transaction is not None else []
+        self.transaction = transaction
         self.origination = origination
         self.delegation = delegation
         self.proposal = proposal
         self.ballot = ballot
+        self.multiTrans = multiTrans if multiTrans is not None else []
 
     @classmethod
     def get_fields(cls):
@@ -45,9 +47,10 @@ class TezosSignTx(p.MessageType):
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
             2: ('branch', p.BytesType, 0),
             3: ('reveal', TezosRevealOp, 0),
-            4: ('transaction', TezosTransactionOp, p.FLAG_REPEATED),
+            4: ('transaction', TezosTransactionOp, 0),
             5: ('origination', TezosOriginationOp, 0),
             6: ('delegation', TezosDelegationOp, 0),
             7: ('proposal', TezosProposalOp, 0),
             8: ('ballot', TezosBallotOp, 0),
+            9: ('multiTrans', TezosTransactionOp, p.FLAG_REPEATED),
         }
