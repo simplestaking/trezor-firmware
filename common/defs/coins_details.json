@@ -29462,6 +29462,24 @@
                     "url": "https://nem.io/downloads/"
                 }
             ]
+        },
+        "misc:LB": {
+            "links": {
+                "GitHub": "https://github.com/libra/libra",
+                "Homepage": "https://libra.org/"
+            },
+            "marketcap_usd": 0,
+            "name": "Libra",
+            "shortcut": "LB",
+            "t1_enabled": "no",
+            "t2_enabled": "yes",
+            "type": "coin",
+            "wallet": [
+                {
+                    "name": "SimpleStaking",
+                    "url": "https://simplestaking.com"
+                }
+            ]
         }
     },
     "info": {

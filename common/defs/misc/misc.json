@@ -200,5 +200,20 @@
         },
         "wallet": {},
         "blockchain_link": {}
+    },
+    {
+        "name": "Libra",
+        "shortcut": "LB",
+        "slip44": 55555,
+        "curve": "ed25519",
+        "decimals": 6,
+        "links": {
+            "Homepage": "https://libra.org",
+            "Github": "https://github.com/libra/libra"
+        },
+        "wallet": {
+            "SimpleStaking": "https://simplestaking.com"
+        },
+        "blockchain_link": {}
     }
 ]
