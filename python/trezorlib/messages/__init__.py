@@ -105,6 +105,10 @@ from .HDNodePathType import HDNodePathType
 from .HDNodeType import HDNodeType
 from .IdentityType import IdentityType
 from .Initialize import Initialize
+from .LibraAddress import LibraAddress
+from .LibraGetAddress import LibraGetAddress
+from .LibraGetPublicKey import LibraGetPublicKey
+from .LibraPublicKey import LibraPublicKey
 from .LiskAddress import LiskAddress
 from .LiskDelegateType import LiskDelegateType
 from .LiskGetAddress import LiskGetAddress

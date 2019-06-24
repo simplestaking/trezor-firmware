@@ -243,6 +243,6 @@ enum MessageType {
     MessageType_LibraAddress = 801 [(wire_out) = true];
     MessageType_LibraGetPublicKey = 802 [(wire_in) = true];
     MessageType_LibraPublicKey = 803 [(wire_out) = true];
-    MessageType_LibraSignTx = 804 [(wire_in) = true];
-    MessageType_LibraSignedTx = 805 [(wire_out) = true];
+//    MessageType_LibraSignTx = 804 [(wire_in) = true];
+//    MessageType_LibraSignedTx = 805 [(wire_out) = true];
 }

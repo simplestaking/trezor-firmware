@@ -1,5 +1,5 @@
 syntax = "proto2";
-package hw.trezor.messages.tezos;
+package hw.trezor.messages.libra;
 
 // Sugar for easier handling in Java
 option java_package = "com.satoshilabs.trezor.lib.protobuf";

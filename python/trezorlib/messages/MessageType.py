@@ -177,3 +177,7 @@ BinanceTransferMsg = 706
 BinanceOrderMsg = 707
 BinanceCancelMsg = 708
 BinanceSignedTx = 709
+LibraGetAddress = 800
+LibraAddress = 801
+LibraGetPublicKey = 802
+LibraPublicKey = 803
