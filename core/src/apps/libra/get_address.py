@@ -18,15 +18,15 @@ async def get_address(ctx, msg, keychain):
 
     # get the pk
     pk = seed.remove_ed25519_prefix(node.public_key())
-    pkh = hashlib.sha3_256(pk, keccak=True).digest()
+    pkh = hexlify(hashlib.sha3_256(pk, keccak=True).digest()).decode()
 
-    print(hexlify(pkh))
+    print(pkh)
 
     # show it on display
     if msg.show_display:
         desc = address_n_to_str(msg.address_n)
         while True:
-            if await show_address(ctx, hexlify(pkh), desc=desc):
+            if await show_address(ctx, pkh, desc=desc):
                 break
             if await show_qr(ctx, hexlify(pkh), desc=desc):
                 break
