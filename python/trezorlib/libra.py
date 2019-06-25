@@ -32,7 +32,7 @@ def get_public_key(client, address_n, show_display=False):
     )
 
 
-# @expect(messages.TezosSignedTx)
+# @expect(messages.LibraSignedTx)
 # def sign_tx(client, address_n, sign_tx_msg):
 #     sign_tx_msg.address_n = address_n
 #     return client.call(sign_tx_msg)
