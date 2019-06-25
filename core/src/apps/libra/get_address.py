@@ -18,18 +18,18 @@ async def get_address(ctx, msg, keychain):
 
     # get the pk
     pk = seed.remove_ed25519_prefix(node.public_key())
-    pkh = hexlify(hashlib.sha3_256(pk, keccak=True).digest()).decode()
-
-    print(pkh)
+    pkh = hashlib.sha3_256(pk, keccak=True).digest()
+    pkh_str = hexlify(pkh).decode()
 
     # show it on display
+
     if msg.show_display:
         desc = address_n_to_str(msg.address_n)
         while True:
-            if await show_address(ctx, pkh, desc=desc):
+            if await show_address(ctx, pkh_str, desc=desc):
                 break
-            if await show_qr(ctx, hexlify(pkh), desc=desc):
+            if await show_qr(ctx, pkh_str, desc=desc):
                 break
 
     # return the LibraPublicKey message
-    return LibraAddress(address=hexlify(pkh))
+    return LibraAddress(address=pkh)
