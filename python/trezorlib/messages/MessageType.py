@@ -181,3 +181,5 @@ LibraGetAddress = 800
 LibraAddress = 801
 LibraGetPublicKey = 802
 LibraPublicKey = 803
+LibraSignTx = 804
+LibraSignedTx = 805

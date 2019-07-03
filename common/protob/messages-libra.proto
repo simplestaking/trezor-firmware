@@ -41,3 +41,37 @@ message LibraGetPublicKey {
 message LibraPublicKey {
     optional string public_key = 1;          // b58 encoded Tezos public key with prefix
 }
+
+message LibraSignTx {
+    repeated uint64 address_n = 1;
+    optional bytes sender_account = 2;
+    optional uint64 sequence_number = 3;
+    optional Program payload = 4;
+    optional uint64 max_gas_amount = 5;
+    optional uint64 gas_unit_price = 6;
+    optional uint64 expiration_time = 7;
+
+
+    message Program {
+        optional bytes code = 1;
+        repeated TransactionArguments args = 2;
+        repeated bytes modules = 3;
+    }
+
+    message TransactionArguments {
+        enum ArgType {
+            U64 = 0;
+            ADDRESS = 1;
+            STRING = 2;
+            BYTEARRAY = 3;
+        }
+        optional ArgType type = 1;
+        optional bytes data = 2;
+    }
+}
+
+message LibraSignedTx {
+    optional bytes raw_txn_bytes = 1;
+    optional bytes sender_public_key = 2;
+    optional bytes signature = 3;
+}

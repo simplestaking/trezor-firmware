@@ -109,6 +109,8 @@ from .LibraAddress import LibraAddress
 from .LibraGetAddress import LibraGetAddress
 from .LibraGetPublicKey import LibraGetPublicKey
 from .LibraPublicKey import LibraPublicKey
+from .LibraSignTx import LibraSignTx
+from .LibraSignedTx import LibraSignedTx
 from .LiskAddress import LiskAddress
 from .LiskDelegateType import LiskDelegateType
 from .LiskGetAddress import LiskGetAddress
@@ -197,6 +199,7 @@ from .PassphraseStateRequest import PassphraseStateRequest
 from .PinMatrixAck import PinMatrixAck
 from .PinMatrixRequest import PinMatrixRequest
 from .Ping import Ping
+from .Program import Program
 from .PublicKey import PublicKey
 from .RecoveryDevice import RecoveryDevice
 from .ResetDevice import ResetDevice
@@ -242,6 +245,7 @@ from .TezosRevealOp import TezosRevealOp
 from .TezosSignTx import TezosSignTx
 from .TezosSignedTx import TezosSignedTx
 from .TezosTransactionOp import TezosTransactionOp
+from .TransactionArguments import TransactionArguments
 from .TransactionType import TransactionType
 from .TxAck import TxAck
 from .TxInputType import TxInputType
@@ -254,6 +258,7 @@ from .VerifyMessage import VerifyMessage
 from .WipeDevice import WipeDevice
 from .WordAck import WordAck
 from .WordRequest import WordRequest
+from . import ArgType
 from . import BinanceOrderSide
 from . import BinanceOrderType
 from . import BinanceTimeInForce

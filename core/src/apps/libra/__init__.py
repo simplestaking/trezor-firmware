@@ -11,3 +11,4 @@ def boot():
     ns = [[CURVE, HARDENED | 44, HARDENED | 55555]]
     wire.add(MessageType.LibraGetAddress, __name__, "get_address", ns)
     wire.add(MessageType.LibraGetPublicKey, __name__, "get_public_key", ns)
+    wire.add(MessageType.LibraSignTx, __name__, "sign_tx", ns)
