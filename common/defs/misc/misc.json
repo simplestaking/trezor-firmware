@@ -202,5 +202,17 @@
         },
         "wallet": {},
         "blockchain_link": {}
+    },
+    {
+        "name": "Aeternity",
+        "shortcut": "AE",
+        "slip44": 457,
+        "curve": "ed25519",
+        "decimals": 2,
+        "links": {
+            "Homepage": "https://aeternity.com/"
+        },
+        "wallet": {},
+        "blockchain_link": {}
     }
 ]

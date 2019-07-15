@@ -2,6 +2,12 @@
 # fmt: off
 
 from .Address import Address
+from .AeternityAddress import AeternityAddress
+from .AeternityGetAddress import AeternityGetAddress
+from .AeternityGetPublicKey import AeternityGetPublicKey
+from .AeternityPublicKey import AeternityPublicKey
+from .AeternitySignTx import AeternitySignTx
+from .AeternitySignedTx import AeternitySignedTx
 from .ApplyFlags import ApplyFlags
 from .ApplySettings import ApplySettings
 from .BackupDevice import BackupDevice
