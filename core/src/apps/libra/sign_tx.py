@@ -32,16 +32,17 @@ async def sign_tx(ctx, msg, keychain):
 def _get_transaction_bytes(w: bytearray, msg):
     write_bytes(w, msg.sender_account)
     write_uint64_be(w, msg.sequence_number)
-    write_bytes(w, msg.payload.code)
+    write_bytes(w, msg.program.code)
 
-    for arg in msg.payload.args:
+    for arg in msg.program.args:
         write_uint8(w, arg.type)
         write_bytes(w, arg.data)
-    for module in msg.payload.modules:
+    for module in msg.program.modules:
         write_uint64_be(w, module)
 
     write_uint64_be(w, msg.max_gas_amount)
-    write_uint64_be(w, msg.gas_unit_price)
+    if msg.gas_unit_price:
+        write_uint64_be(w, msg.gas_unit_price)
     write_uint64_be(w, msg.expiration_time)
 
 

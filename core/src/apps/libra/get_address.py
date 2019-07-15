@@ -32,4 +32,5 @@ async def get_address(ctx, msg, keychain):
                 break
 
     # return the LibraPublicKey message
+    # TODO: return the string representation, need to change LibraAddress proto msg
     return LibraAddress(address=pkh)

@@ -258,6 +258,7 @@ from .VerifyMessage import VerifyMessage
 from .WipeDevice import WipeDevice
 from .WordAck import WordAck
 from .WordRequest import WordRequest
+from .WriteSet import WriteSet
 from . import ArgType
 from . import BinanceOrderSide
 from . import BinanceOrderType

@@ -3,6 +3,7 @@
 import protobuf as p
 
 from .Program import Program
+from .WriteSet import WriteSet
 
 if __debug__:
     try:
@@ -19,7 +20,8 @@ class LibraSignTx(p.MessageType):
         address_n: List[int] = None,
         sender_account: bytes = None,
         sequence_number: int = None,
-        payload: Program = None,
+        program: Program = None,
+        write_set: WriteSet = None,
         max_gas_amount: int = None,
         gas_unit_price: int = None,
         expiration_time: int = None,
@@ -27,7 +29,8 @@ class LibraSignTx(p.MessageType):
         self.address_n = address_n if address_n is not None else []
         self.sender_account = sender_account
         self.sequence_number = sequence_number
-        self.payload = payload
+        self.program = program
+        self.write_set = write_set
         self.max_gas_amount = max_gas_amount
         self.gas_unit_price = gas_unit_price
         self.expiration_time = expiration_time
@@ -38,8 +41,9 @@ class LibraSignTx(p.MessageType):
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
             2: ('sender_account', p.BytesType, 0),
             3: ('sequence_number', p.UVarintType, 0),
-            4: ('payload', Program, 0),
-            5: ('max_gas_amount', p.UVarintType, 0),
-            6: ('gas_unit_price', p.UVarintType, 0),
-            7: ('expiration_time', p.UVarintType, 0),
+            4: ('program', Program, 0),
+            5: ('write_set', WriteSet, 0),
+            6: ('max_gas_amount', p.UVarintType, 0),
+            7: ('gas_unit_price', p.UVarintType, 0),
+            8: ('expiration_time', p.UVarintType, 0),
         }

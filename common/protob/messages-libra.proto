@@ -43,13 +43,17 @@ message LibraPublicKey {
 }
 
 message LibraSignTx {
-    repeated uint64 address_n = 1;
+    repeated uint32 address_n = 1;
     optional bytes sender_account = 2;
     optional uint64 sequence_number = 3;
-    optional Program payload = 4;
-    optional uint64 max_gas_amount = 5;
-    optional uint64 gas_unit_price = 6;
-    optional uint64 expiration_time = 7;
+    //optional Program payload = 4;
+    oneof payload {
+        Program program = 4;
+        WriteSet write_set = 5;
+    }
+    optional uint64 max_gas_amount = 6;
+    optional uint64 gas_unit_price = 7;
+    optional uint64 expiration_time = 8;
 
 
     message Program {
@@ -57,6 +61,12 @@ message LibraSignTx {
         repeated TransactionArguments args = 2;
         repeated bytes modules = 3;
     }
+
+    message WriteSet {
+        optional string blob = 1;
+    }
+
+
 
     message TransactionArguments {
         enum ArgType {
