@@ -16,13 +16,13 @@ class AeternitySignTx(p.MessageType):
         self,
         address_n: List[int] = None,
         vsn: int = None,
-        sender_id: bytes = None,
-        recipient_id: bytes = None,
+        sender_id: str = None,
+        recipient_id: str = None,
         amount: int = None,
         fee: int = None,
         ttl: int = None,
         nonce: int = None,
-        payload: bytes = None,
+        payload: str = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
         self.vsn = vsn
@@ -39,11 +39,11 @@ class AeternitySignTx(p.MessageType):
         return {
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
             2: ('vsn', p.UVarintType, 0),
-            3: ('sender_id', p.BytesType, 0),
-            4: ('recipient_id', p.BytesType, 0),
+            3: ('sender_id', p.UnicodeType, 0),
+            4: ('recipient_id', p.UnicodeType, 0),
             5: ('amount', p.UVarintType, 0),
             6: ('fee', p.UVarintType, 0),
             7: ('ttl', p.UVarintType, 0),
             8: ('nonce', p.UVarintType, 0),
-            9: ('payload', p.BytesType, 0),
+            9: ('payload', p.UnicodeType, 0),
         }
