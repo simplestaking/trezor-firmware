@@ -18,29 +18,35 @@ async def sign_tx(ctx, msg, keychain):
 
     node = keychain.derive(msg.address_n, CURVE)
 
-    # w = bytearray()
+    await layout.require_confirm_tx(ctx, msg.recipient_id, msg.amount)
+    await layout.require_confirm_fee(
+        ctx, msg.amount, msg.fee
+    )
+
+    # TODO: send the network id in the message
     network_id = "ae_uat"
     enc_ni = network_id.encode('utf-8')
 
     w = encode_transaction(msg)
     signature = ed25519.sign(node.private_key(), enc_ni + w)
-    encoded_signed_tx = rlp.encode([msg.tag, msg.vsn, [signature], w])
-
+    # TODO: replace 'magic' constants with named ones (identifiers.py)
+    encoded_signed_tx = rlp.encode([bytes([11]), bytes([1]), [signature], w])
 
     signature_perfixed = helpers.base58_encode_check_prepend(
         signature, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX
     )
 
-    return AeternitySignedTx(
-        signature=signature_perfixed, raw_bytes=w
+    transaction_hash = hashlib.blake2b(encoded_signed_tx, outlen=32).digest()
+    tx_hash_encoded = helpers.base58_encode_check_prepend(
+        transaction_hash, helpers.AETERNITY_TRANSACTION_HASH_PREFIX
     )
 
-
-# def encode_rlp(data):
-#     if not isinstance(data, list):
-#         raise ValueError("data to be encoded to rlp must be a list")
-#     payload = rlp.encode(data)
-#     return helpers.AETERNITY_TRANSACTION_PREFIX + base64.b64encode(payload)
+    return AeternitySignedTx(
+        signature=signature_perfixed,
+        raw_bytes=w,
+        tx_hash=tx_hash_encoded,
+        raw_encoded_tx=encoded_signed_tx
+    )
 
 
 def encode_transaction(msg):
@@ -88,10 +94,8 @@ def get_byte_count(val: int):
 def write_uint_arbitrary_be(n: int):
     w = bytearray()
     byte_count = get_byte_count(n)
-    print("Encoded int byte count: {}".format(byte_count))
 
     for i in range(byte_count * 8 - 8, -1, -8):
         w.append((n >> i) & 0xFF)
-        print("Bitwise: ({} >> {}) & 0xFF".format(n, i))
 
     return w

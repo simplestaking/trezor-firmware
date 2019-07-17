@@ -1,5 +1,5 @@
 from micropython import const
-
+import math
 from trezor.crypto import base58
 
 from apps.common import HARDENED
@@ -9,6 +9,8 @@ AETERNITY_ACCOUNT_PREFIX = "ak_"
 AETERNITY_ACCOUNT_PREFIX_TEST = "tt_"
 AETERNITY_TRANSACTION_SIGNATURE_PREFIX = "sg_"
 AETERNITY_TRANSACTION_PREFIX = "tx_"
+AETERNITY_TRANSACTION_HASH_PREFIX = 'th_'
+AETERNITY_AMOUNT_DIVISIBILITY = const(8)
 
 
 def base58_encode_check_prepend(payload, prefix=None):
@@ -24,3 +26,26 @@ def base58_decode_check_prepend(payload, prefix=None):
     result = base58.decode_check(payload)
 
     return result
+
+
+def format_amount(val: int) -> str:
+    digits = len(str(val))
+
+    if 0 < digits <= 8:
+        token_name = ' picoAE'
+        val = val / pow(10, 6)
+    elif 8 < digits <= 11:
+        token_name = ' nanoAE'
+        val /= pow(10, 9)
+    elif 11 < digits <= 14:
+        token_name = ' microAE'
+        val /= pow(10, 12)
+    elif 14 < digits <= 17:
+        token_name = ' milliAE'
+        val /= pow(10, 15)
+    else:
+        token_name = ' AE'
+        val /= pow(10, 18)
+
+    return str(val) + token_name
+

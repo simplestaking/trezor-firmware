@@ -59,6 +59,8 @@ message AeternitySignTx {
 message AeternitySignedTx {
     optional string signature = 1;
     optional bytes raw_bytes = 2;
+    optional bytes raw_encoded_tx = 3;
+    optional string tx_hash = 4;
 }
 
 /*
