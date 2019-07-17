@@ -130,8 +130,8 @@ print(tx_signed.data)
 print(tx_signed2.data)
 print(tx_signed.tx)
 print(tx_signed2.tx)
-print(tx_signed.hash)
-print(tx_signed2.hash)
+print(decode(tx_signed.hash).hex())
+print(decode(tx_signed2.hash).hex())
 print('----------')
 print((decode(txn.tx).hex()))
 
@@ -143,20 +143,15 @@ print((decode(txn.tx).hex()))
 # print(bytes(payload_decoded).hex())
 # print(bytes('test_tx'.encode('utf-8')))
 
-# aeternity_cli = node.NodeClient(node.Config(
-#     external_url="https://sdk-testnet.aepps.com",
-# ))
-#
-# aeternity_cli.broadcast_transaction(tx_signed.tx, tx_signed.hash)
-#
-# print(f"https://testnet.explorer.aepps.com/#/tx/{tx_signed.hash}")
-# print(f"now waiting for confirmation (it will take ~9 minutes)...")
-#
-# # Step 4: [optional] wait for transaction verification
-# # the default will wait 3 blocks after the transaction generation blocks
-# # the confirmation blocks number can be changed passing the
-# # key_block_confirmation_num
-# # parameter to teh node.Config
-# aeternity_cli.wait_for_confirmation(tx_signed.hash)
-#
-# print(f"transaction confirmed!")
+aeternity_cli = node.NodeClient(node.Config(
+    external_url="https://sdk-testnet.aepps.com",
+))
+
+aeternity_cli.broadcast_transaction(tx_signed.tx, tx_signed.hash)
+
+print(f"https://testnet.explorer.aepps.com/#/tx/{tx_signed.hash}")
+print(f"now waiting for confirmation (it will take ~9 minutes)...")
+
+aeternity_cli.wait_for_confirmation(tx_signed.hash)
+
+print(f"transaction confirmed!")

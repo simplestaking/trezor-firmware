@@ -18,13 +18,14 @@ async def sign_tx(ctx, msg, keychain):
 
     node = keychain.derive(msg.address_n, CURVE)
 
-    w = bytearray()
+    # w = bytearray()
     network_id = "ae_uat"
     enc_ni = network_id.encode('utf-8')
 
-    encode_transaction(w, msg)
+    w = encode_transaction(msg)
     signature = ed25519.sign(node.private_key(), enc_ni + w)
-     # encoded_signed_tx = encode_rlp([msg.tag, msg.vsn, [signature], w])
+    encoded_signed_tx = rlp.encode([msg.tag, msg.vsn, [signature], w])
+
 
     signature_perfixed = helpers.base58_encode_check_prepend(
         signature, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX
@@ -42,35 +43,33 @@ async def sign_tx(ctx, msg, keychain):
 #     return helpers.AETERNITY_TRANSACTION_PREFIX + base64.b64encode(payload)
 
 
-def encode_transaction(w, msg):
-    _encode_int(w, 12)
-    _encode_int(w, 1)   # vsn
-    _encode_id(w, helpers.base58_decode_check_prepend(msg.sender_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX))
-    _encode_id(w, helpers.base58_decode_check_prepend(msg.recipient_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX))
-    _encode_int(w, msg.amount)
-    _encode_int(w, msg.fee)
-    _encode_int(w, msg.ttl)
-    _encode_int(w, msg.nonce)
-    write_bytes(w, bytes(msg.payload.encode('utf-8')))
+def encode_transaction(msg):
+    payload_bytes = bytearray()
+    write_bytes(payload_bytes, bytes(msg.payload.encode('utf-8')))
 
-    # _int(tag),
-    # _int(vsn),
-    # _id(kwargs.get("sender_id")),
-    # _id(kwargs.get("recipient_id")),
-    # _int(kwargs.get("amount")),
-    # _int(kwargs.get("fee")),  # index 5
-    # _int(kwargs.get("ttl")),
-    # _int(kwargs.get("nonce")),
-    # _binary(kwargs.get("payload"))
+    tx_fields = [
+        _encode_int(12),
+        _encode_int(1),
+        _encode_id(helpers.base58_decode_check_prepend(msg.sender_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX)),
+        _encode_id(helpers.base58_decode_check_prepend(msg.recipient_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX)),
+        _encode_int(msg.amount),
+        _encode_int(msg.fee),
+        _encode_int(msg.ttl),
+        _encode_int(msg.nonce),
+        payload_bytes
+    ]
+
+    return rlp.encode(tx_fields)
 
 
-def _encode_int(w, val: int):
-    write_uint_arbitrary_be(w, val)
+def _encode_int(val: int):
+    return write_uint_arbitrary_be(val)
 
 
-def _encode_id(w, id_str):
-    write_uint_arbitrary_be(w, 1)
+def _encode_id(id_str):
+    w = write_uint_arbitrary_be(1)
     write_bytes(w, id_str)
+    return w
 
 
 def get_byte_count(val: int):
@@ -86,7 +85,8 @@ def get_byte_count(val: int):
         return count
 
 
-def write_uint_arbitrary_be(w: Writer, n: int) -> int:
+def write_uint_arbitrary_be(n: int):
+    w = bytearray()
     byte_count = get_byte_count(n)
     print("Encoded int byte count: {}".format(byte_count))
 
@@ -94,4 +94,4 @@ def write_uint_arbitrary_be(w: Writer, n: int) -> int:
         w.append((n >> i) & 0xFF)
         print("Bitwise: ({} >> {}) & 0xFF".format(n, i))
 
-    return byte_count
+    return w

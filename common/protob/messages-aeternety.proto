@@ -47,17 +47,18 @@ message AeternityPublicKey {
 message AeternitySignTx {
     repeated uint32 address_n = 1;
     optional uint32 vsn = 2;
-    optional bytes sender_id = 3;
-    optional bytes recipient_id = 4;
+    optional string sender_id = 3;
+    optional string recipient_id = 4;
     optional uint32 amount = 5;
     optional uint32 fee = 6;
     optional uint32 ttl = 7;
     optional uint32 nonce = 8;
-    optional bytes payload = 9;
+    optional string payload = 9;
 }
 
 message AeternitySignedTx {
     optional string signature = 1;
+    optional bytes raw_bytes = 2;
 }
 
 /*

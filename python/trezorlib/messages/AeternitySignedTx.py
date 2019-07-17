@@ -15,11 +15,14 @@ class AeternitySignedTx(p.MessageType):
     def __init__(
         self,
         signature: str = None,
+        raw_bytes: bytes = None,
     ) -> None:
         self.signature = signature
+        self.raw_bytes = raw_bytes
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
             1: ('signature', p.UnicodeType, 0),
+            2: ('raw_bytes', p.BytesType, 0),
         }
