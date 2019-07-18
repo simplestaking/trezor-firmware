@@ -1,9 +1,9 @@
 from trezor.crypto import hashlib
 from trezor.messages.AeternityAddress import AeternityAddress
 
+from apps.aeternity import CURVE, helpers
 from apps.common import paths, seed
 from apps.common.layout import address_n_to_str, show_address, show_qr
-from apps.aeternity import CURVE, helpers
 
 
 async def get_address(ctx, msg, keychain):

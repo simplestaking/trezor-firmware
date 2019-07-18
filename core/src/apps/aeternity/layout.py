@@ -3,8 +3,8 @@ from trezor.messages import ButtonRequestType
 from trezor.ui.text import Text
 from trezor.utils import chunks
 
-from apps.common.confirm import require_confirm, require_hold_to_confirm
 from apps.aeternity.helpers import AETERNITY_AMOUNT_DIVISIBILITY, format_amount
+from apps.common.confirm import require_confirm, require_hold_to_confirm
 
 
 async def require_confirm_tx(ctx, recipient, amount):
@@ -27,4 +27,3 @@ async def require_confirm_fee(ctx, amount, fee):
 
 def split_address(address):
     return chunks(address, 18)
-

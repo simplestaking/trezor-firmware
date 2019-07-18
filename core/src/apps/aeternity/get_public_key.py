@@ -4,9 +4,9 @@ from trezor.messages.AeternityPublicKey import AeternityPublicKey
 from trezor.ui.text import Text
 from trezor.utils import chunks
 
+from apps.aeternity import CURVE, helpers
 from apps.common import paths, seed
 from apps.common.confirm import require_confirm
-from apps.aeternity import CURVE, helpers
 
 
 async def get_public_key(ctx, msg, keychain):
@@ -14,7 +14,9 @@ async def get_public_key(ctx, msg, keychain):
 
     node = keychain.derive(msg.address_n, CURVE)
     pk = seed.remove_ed25519_prefix(node.public_key())
-    pk_prefixed = helpers.base58_encode_check_prepend(pk, prefix=helpers.AETERNITY_ACCOUNT_PREFIX)
+    pk_prefixed = helpers.base58_encode_check_prepend(
+        pk, prefix=helpers.AETERNITY_ACCOUNT_PREFIX
+    )
 
     if msg.show_display:
         await _show_tezos_pubkey(ctx, pk_prefixed)

@@ -5,32 +5,37 @@ from trezor.crypto import hashlib, rlp
 from trezor.crypto.curve import ed25519
 from trezor.messages.AeternitySignedTx import AeternitySignedTx
 
+from apps.aeternity import CURVE, helpers, layout
 from apps.common import paths
 from apps.common.writers import write_bytes, write_uint8, write_uint32_be
-from apps.aeternity import CURVE, helpers, layout
 
 if False:
     from trezor.utils import Writer
 
 
 async def sign_tx(ctx, msg, keychain):
-    #TODO: validate path
+    # TODO: validate path
 
     node = keychain.derive(msg.address_n, CURVE)
 
     await layout.require_confirm_tx(ctx, msg.recipient_id, msg.amount)
-    await layout.require_confirm_fee(
-        ctx, msg.amount, msg.fee
-    )
+    await layout.require_confirm_fee(ctx, msg.amount, msg.fee)
 
     # TODO: send the network id in the message
     network_id = "ae_uat"
-    enc_ni = network_id.encode('utf-8')
+    enc_ni = network_id.encode("utf-8")
 
     w = encode_transaction(msg)
     signature = ed25519.sign(node.private_key(), enc_ni + w)
     # TODO: replace 'magic' constants with named ones (identifiers.py)
-    encoded_signed_tx = rlp.encode([bytes([11]), bytes([1]), [signature], w])
+    encoded_signed_tx = rlp.encode(
+        [
+            bytes([helpers.AETERNITY_OBJECT_TAG_SIGNED_TRANSACTION]),
+            bytes([helpers.AETERNITY_VSN]),
+            [signature],
+            w,
+        ]
+    )
 
     signature_perfixed = helpers.base58_encode_check_prepend(
         signature, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX
@@ -45,24 +50,32 @@ async def sign_tx(ctx, msg, keychain):
         signature=signature_perfixed,
         raw_bytes=w,
         tx_hash=tx_hash_encoded,
-        raw_encoded_tx=encoded_signed_tx
+        raw_encoded_tx=encoded_signed_tx,
     )
 
 
 def encode_transaction(msg):
     payload_bytes = bytearray()
-    write_bytes(payload_bytes, bytes(msg.payload.encode('utf-8')))
+    write_bytes(payload_bytes, bytes(msg.payload.encode("utf-8")))
 
     tx_fields = [
         _encode_int(12),
         _encode_int(1),
-        _encode_id(helpers.base58_decode_check_prepend(msg.sender_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX)),
-        _encode_id(helpers.base58_decode_check_prepend(msg.recipient_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX)),
+        _encode_id(
+            helpers.base58_decode_check_prepend(
+                msg.sender_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX
+            )
+        ),
+        _encode_id(
+            helpers.base58_decode_check_prepend(
+                msg.recipient_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX
+            )
+        ),
         _encode_int(msg.amount),
         _encode_int(msg.fee),
         _encode_int(msg.ttl),
         _encode_int(msg.nonce),
-        payload_bytes
+        payload_bytes,
     ]
 
     return rlp.encode(tx_fields)
