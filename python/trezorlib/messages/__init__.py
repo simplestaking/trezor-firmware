@@ -256,6 +256,7 @@ from .VerifyMessage import VerifyMessage
 from .WipeDevice import WipeDevice
 from .WordAck import WordAck
 from .WordRequest import WordRequest
+from . import AeternityNetworkType
 from . import BinanceOrderSide
 from . import BinanceOrderType
 from . import BinanceTimeInForce

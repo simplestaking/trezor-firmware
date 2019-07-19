@@ -3,7 +3,7 @@ from trezor.messages import ButtonRequestType
 from trezor.ui.text import Text
 from trezor.utils import chunks
 
-from apps.aeternity.helpers import AETERNITY_AMOUNT_DIVISIBILITY, format_amount
+from apps.aeternity.helpers import format_amount
 from apps.common.confirm import require_confirm, require_hold_to_confirm
 
 

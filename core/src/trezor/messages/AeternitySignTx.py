@@ -15,6 +15,7 @@ class AeternitySignTx(p.MessageType):
     def __init__(
         self,
         address_n: List[int] = None,
+        network: int = None,
         vsn: int = None,
         sender_id: str = None,
         recipient_id: str = None,
@@ -25,6 +26,7 @@ class AeternitySignTx(p.MessageType):
         payload: str = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
+        self.network = network
         self.vsn = vsn
         self.sender_id = sender_id
         self.recipient_id = recipient_id
@@ -38,12 +40,13 @@ class AeternitySignTx(p.MessageType):
     def get_fields(cls) -> Dict:
         return {
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
-            2: ('vsn', p.UVarintType, 0),
-            3: ('sender_id', p.UnicodeType, 0),
-            4: ('recipient_id', p.UnicodeType, 0),
-            5: ('amount', p.UVarintType, 0),
-            6: ('fee', p.UVarintType, 0),
-            7: ('ttl', p.UVarintType, 0),
-            8: ('nonce', p.UVarintType, 0),
-            9: ('payload', p.UnicodeType, 0),
+            2: ('network', p.UVarintType, 0),
+            3: ('vsn', p.UVarintType, 0),
+            4: ('sender_id', p.UnicodeType, 0),
+            5: ('recipient_id', p.UnicodeType, 0),
+            6: ('amount', p.UVarintType, 0),
+            7: ('fee', p.UVarintType, 0),
+            8: ('ttl', p.UVarintType, 0),
+            9: ('nonce', p.UVarintType, 0),
+            10: ('payload', p.UnicodeType, 0),
         }

@@ -4,6 +4,7 @@ from trezor import wire
 from trezor.crypto import hashlib, rlp
 from trezor.crypto.curve import ed25519
 from trezor.messages.AeternitySignedTx import AeternitySignedTx
+from trezor.messages import AeternityNetworkType
 
 from apps.aeternity import CURVE, helpers, layout
 from apps.common import paths
@@ -22,11 +23,15 @@ async def sign_tx(ctx, msg, keychain):
     await layout.require_confirm_fee(ctx, msg.amount, msg.fee)
 
     # TODO: send the network id in the message
-    network_id = "ae_uat"
-    enc_ni = network_id.encode("utf-8")
+    # network_id = "ae_uat"
+
+    if msg.network == AeternityNetworkType.MainNet:
+        network_id = helpers.AETERNITY_NETWORK_ID_MAINNET.encode('utf-8')
+    elif msg.network == AeternityNetworkType.TestNet:
+        network_id = helpers.AETERNITY_NETWORK_ID_TESTNET.encode('utf-8')
 
     w = encode_transaction(msg)
-    signature = ed25519.sign(node.private_key(), enc_ni + w)
+    signature = ed25519.sign(node.private_key(), network_id + w)
     # TODO: replace 'magic' constants with named ones (identifiers.py)
     encoded_signed_tx = rlp.encode(
         [
@@ -59,8 +64,8 @@ def encode_transaction(msg):
     write_bytes(payload_bytes, bytes(msg.payload.encode("utf-8")))
 
     tx_fields = [
-        _encode_int(12),
-        _encode_int(1),
+        _encode_int(helpers.AETERNITY_OBJECT_TAG_SPEND_TRANSACTION),
+        _encode_int(helpers.AETERNITY_VSN),
         _encode_id(
             helpers.base58_decode_check_prepend(
                 msg.sender_id, prefix=helpers.AETERNITY_TRANSACTION_SIGNATURE_PREFIX

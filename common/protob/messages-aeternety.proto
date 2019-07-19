@@ -46,14 +46,20 @@ message AeternityPublicKey {
 //TODO: implement the rest of the transactions in a structured way
 message AeternitySignTx {
     repeated uint32 address_n = 1;
-    optional uint32 vsn = 2;
-    optional string sender_id = 3;
-    optional string recipient_id = 4;
-    optional uint32 amount = 5;
-    optional uint32 fee = 6;
-    optional uint32 ttl = 7;
-    optional uint32 nonce = 8;
-    optional string payload = 9;
+    optional AeternityNetworkType network = 2;
+    optional uint32 vsn = 3;
+    optional string sender_id = 4;
+    optional string recipient_id = 5;
+    optional uint32 amount = 6;
+    optional uint32 fee = 7;
+    optional uint32 ttl = 8;
+    optional uint32 nonce = 9;
+    optional string payload = 10;
+
+    enum AeternityNetworkType{
+        TestNet = 0;
+        MainNet = 1;
+    }
 }
 
 message AeternitySignedTx {
@@ -62,15 +68,3 @@ message AeternitySignedTx {
     optional bytes raw_encoded_tx = 3;
     optional string tx_hash = 4;
 }
-
-/*
-_int(tag),
-                _int(vsn),
-                _id(kwargs.get("sender_id")),
-                _id(kwargs.get("recipient_id")),
-                _int(kwargs.get("amount")),
-                _int(kwargs.get("fee")),  # index 5
-                _int(kwargs.get("ttl")),
-                _int(kwargs.get("nonce")),
-                _binary(kwargs.get("payload"))
-*/
