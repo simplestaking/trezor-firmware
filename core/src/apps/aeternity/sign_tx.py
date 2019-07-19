@@ -22,17 +22,13 @@ async def sign_tx(ctx, msg, keychain):
     await layout.require_confirm_tx(ctx, msg.recipient_id, msg.amount)
     await layout.require_confirm_fee(ctx, msg.amount, msg.fee)
 
-    # TODO: send the network id in the message
-    # network_id = "ae_uat"
-
     if msg.network == AeternityNetworkType.MainNet:
         network_id = helpers.AETERNITY_NETWORK_ID_MAINNET.encode('utf-8')
-    elif msg.network == AeternityNetworkType.TestNet:
+    else:
         network_id = helpers.AETERNITY_NETWORK_ID_TESTNET.encode('utf-8')
 
     w = encode_transaction(msg)
     signature = ed25519.sign(node.private_key(), network_id + w)
-    # TODO: replace 'magic' constants with named ones (identifiers.py)
     encoded_signed_tx = rlp.encode(
         [
             bytes([helpers.AETERNITY_OBJECT_TAG_SIGNED_TRANSACTION]),
