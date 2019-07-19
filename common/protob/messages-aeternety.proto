@@ -48,13 +48,61 @@ message AeternitySignTx {
     repeated uint32 address_n = 1;
     optional AeternityNetworkType network = 2;
     optional uint32 vsn = 3;
-    optional string sender_id = 4;
-    optional string recipient_id = 5;
-    optional uint32 amount = 6;
     optional uint32 fee = 7;
     optional uint32 ttl = 8;
     optional uint32 nonce = 9;
-    optional string payload = 10;
+
+
+    message AeternitySpendTransaction {
+        optional string sender_id = 4;
+        optional string recipient_id = 5;
+        optional uint32 amount = 6;
+        optional string payload = 10;
+    }
+
+    message AeternityNameServicePreclaimTransaction {
+        optional string account_id = 1;
+        optional string commitment_id = 21;
+    }
+
+    message AeternityNameServiceClaimTransaction {
+        optional string account_id = 1;
+        optional string commitment_id = 3;
+        optional string name = 4;
+        optional string name_salt = 5;
+    }
+
+    message AeternityNameServiceUpdateTransaction {
+        //TODO: anlyse 'pointers'
+    }
+
+    message AeternityNameServiceTransferTransaction {
+        optional string account_id = 1;
+        optional string name_id = 2;
+        optional string recipient_id = 3;
+
+    }
+
+    message AeternityNameServiceRevokeTransaction {
+        optional string account_id = 1;
+        optional string aname_id = 2;
+    }
+
+    message AeternityContractCreateTransaction {
+
+    }
+
+
+
+    /*
+                _int(tag),
+                _int(vsn),
+                _id(kwargs.get("account_id")),
+                _int(kwargs.get("nonce")),
+                _id(kwargs.get("commitment_id")),
+                _int(kwargs.get("fee")),
+                _int(kwargs.get("ttl"))
+    */
 
     enum AeternityNetworkType{
         TestNet = 0;
