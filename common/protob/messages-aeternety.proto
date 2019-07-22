@@ -89,20 +89,136 @@ message AeternitySignTx {
     }
 
     message AeternityContractCreateTransaction {
-
+        optional string owner_id = 1;
+        optional string code = 2;
+        optional uint32 vm_version = 3;
+        optional uint32 abi_version = 4;
+        optional uint32 deposit = 5;
+        optional uint32 amount = 6;
+        optional uint32 gas = 7;
+        optional uint32 gas_price = 8;
+        optional string call_data = 9;
     }
 
+    message AeternityContractCallTransaction {
+        optional string caller_id = 1;
+        optional string contract_id = 2;
+        optional uint32 abi_vbersion = 3;
+        optional uint32 amount = 4;
+        optional uint32 gas = 5;
+        optional uint32 gas_price = 6;
+        optional string call_data = 7;
+    }
 
+    message AeternityChannelCreateTransaction {
+        optional string initiator = 1;
+        optional uint32 initiator_amount = 2;
+        optional string responder = 3;
+        optional uint32 responder_amount = 4;
+        optional uint32 channel_reserve = 5;
+        optional uint32 lock_period = 6;
+        repeated string delegate_ids = 7;
+        optional string sate_hash = 8;
+    }
 
-    /*
-                _int(tag),
-                _int(vsn),
-                _id(kwargs.get("account_id")),
-                _int(kwargs.get("nonce")),
-                _id(kwargs.get("commitment_id")),
-                _int(kwargs.get("fee")),
-                _int(kwargs.get("ttl"))
-    */
+    message AeternityChannelDepositTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional uint32 amount = 3;
+        optional string state_hash = 4;
+        optional uint32 round = 5;
+    }
+
+    message AeternityChannelWithdrawTransaction {
+        optional string channel_id = 1;
+        optional string to_id = 2;
+        optional uint32 amount = 3;
+        optional string state_hash = 4;
+        optional uint32 round = 5;
+    }
+
+    message AeternityChannelCloseMutualTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional uint32 initiator_amount_final = 3;
+        optional uint32 responder_amount_final = 4;
+    }
+
+    message AeternityChannelCloseSoloTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional string payload = 3;
+        //TODO: implement support for _poi (depends on python aepp-sdk)
+        optional uint32 responder_amount_final = 4;
+    }
+
+    // Note: same as the one above
+    message AeternityChannelSlashTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional string payload = 3;
+        //TODO: implement support for _poi (depends on python aepp-sdk)
+        optional uint32 responder_amount_final = 4;
+    }
+
+    message AeternityChannelSettleTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional uint32 initiator_amount_final = 3;
+        optional uint32 responder_amount_final = 4;
+    }
+
+    message AeternityChannelSnapshotTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional string payload = 3;
+    }
+
+    message AeternityChannelForceProgressTransaction {
+        optional string channel_id = 1;
+        optional string from_id = 2;
+        optional string payload = 3;
+        optional uint32 round = 4;
+        optional string update = 5;
+        optional string state_hash = 6;
+        // Note: imp[lement _trees when it comes out
+    }
+
+    message AeternityOracleRegisterTransaction {
+        optional string account_id = 1;
+        optional string query_format = 2;
+        optional string response_format = 3;
+        optional uint32 query_fee = 4;
+        optional string oracle_ttl_type = 5; // TODO: possible enum
+        optional string oracle_ttl_value = 6; // TODO: structure?
+        optional uint32 vm_version = 7;
+    }
+
+    message AeternityOracleQueryTransaction {
+        optional string sender_id = 1;
+        optional string oracle_id = 2;
+        optional string query = 3;
+        optional uint32 query_fee = 4;
+        optional string oracle_ttl_type = 5; // TODO: possible enum
+        optional string oracle_ttl_value = 6; // TODO: structure?
+        optional string response_ttl_type = 7; // TODO: possible enum
+        optional string response_ttl_value = 8; // TODO: structure?
+}
+
+    message AeternityOracleResponseTransaction {
+        optional string oracle_id = 1;
+        optional string query_id = 2;
+        optional string resposne = 3;
+        optional string response_ttl_type = 4; // TODO: possible enum
+        optional string response_ttl_value = 5; // TODO: structure?
+    }
+
+    message AeternityOracleExtendTransaction {
+        optional string oracle_id = 1;
+        optional string oracle_ttl_type = 2; // TODO: possible enum
+        optional string oracle_ttl_value = 3; // TODO: structure?
+    }
+
 
     enum AeternityNetworkType{
         TestNet = 0;
