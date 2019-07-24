@@ -48,9 +48,32 @@ message AeternitySignTx {
     repeated uint32 address_n = 1;
     optional AeternityNetworkType network = 2;
     optional uint32 vsn = 3;
-    optional uint32 fee = 7;
-    optional uint32 ttl = 8;
-    optional uint32 nonce = 9;
+    optional uint32 fee = 4;
+    optional uint32 ttl = 5;
+    optional uint32 nonce = 6;
+
+    optional AeternitySpendTransaction spend = 7;
+    optional AeternityNameServicePreclaimTransaction aens_preclaim = 8;
+    optional AeternityNameServiceClaimTransaction aens_claim = 9;
+    optional AeternityNameServiceUpdateTransaction aens_update = 10;
+    optional AeternityNameServiceTransferTransaction aens_transfer = 11;
+    optional AeternityNameServiceRevokeTransaction aens_revoke = 12;
+    optional AeternityContractCreateTransaction contract_create = 13;
+    optional AeternityContractCallTransaction contract_call = 14;
+    optional AeternityChannelCreateTransaction channel_create = 15;
+    optional AeternityChannelDepositTransaction channel_deposit = 16;
+    optional AeternityChannelWithdrawTransaction channel_withdraw = 17;
+    optional AeternityChannelCloseMutualTransaction channel_close_mutual = 18;
+    optional AeternityChannelCloseSoloTransaction channel_close_solo = 19;
+    optional AeternityChannelSlashTransaction channel_slash = 20;
+    optional AeternityChannelSettleTransaction channel_settle = 21;
+    optional AeternityChannelSnapshotTransaction channel_snapshot = 22;
+    optional AeternityChannelForceProgressTransaction channel_force_progress = 23;
+    optional AeternityOracleRegisterTransaction oracle_register = 24;
+    optional AeternityOracleQueryTransaction oracle_query = 25;
+    optional AeternityOracleResponseTransaction oracle_response = 26;
+    optional AeternityOracleExtendTransaction oracle_extend = 27;
+
 
 
     message AeternitySpendTransaction {
