@@ -22,7 +22,7 @@ async def require_confirm_fee(ctx, amount, fee):
     text.bold(format_amount(amount))
     text.normal("Fee:")
     text.bold(format_amount(fee))
-    return await require_hold_to_confirm(ctx, text, ButtonRequestType.SignTx)
+    return await require_confirm(ctx, text, ButtonRequestType.SignTx)
 
 
 def split_address(address):
