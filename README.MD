@@ -2,6 +2,11 @@
 
 **Disclaimer: this feature is still under development! Do not use on the aeternity mainnet**
 
+### OS
+This demo works on the following operating systems:
+- Mac OS X
+- Ubuntu/Debian
+
 ### Prerequisites
 
 - Python3
