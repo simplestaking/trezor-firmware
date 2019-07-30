@@ -216,5 +216,17 @@
             "OMNI Trezor": "https://omnitrezor.com/"
         },
         "blockchain_link": {}
-    }
+    },
+  {
+    "name": "Polkadot",
+    "shortcut": "DOT",
+    "slip44": 357,
+    "curve": "ed25519",
+    "decimals": 2,
+    "links": {
+      "Homepage": "https://polkadot.network/"
+    },
+    "wallet": {},
+    "blockchain_link": {}
+  }
 ]

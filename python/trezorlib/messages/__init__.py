@@ -193,6 +193,10 @@ from .PassphraseStateRequest import PassphraseStateRequest
 from .PinMatrixAck import PinMatrixAck
 from .PinMatrixRequest import PinMatrixRequest
 from .Ping import Ping
+from .PolkadotAddress import PolkadotAddress
+from .PolkadotGetAddress import PolkadotGetAddress
+from .PolkadotGetPublicKey import PolkadotGetPublicKey
+from .PolkadotPublicKey import PolkadotPublicKey
 from .PublicKey import PublicKey
 from .RecoveryDevice import RecoveryDevice
 from .ResetDevice import ResetDevice

@@ -177,3 +177,7 @@ BinanceTransferMsg = 706
 BinanceOrderMsg = 707
 BinanceCancelMsg = 708
 BinanceSignedTx = 709
+PolkadotGetAddress = 800
+PolkadotAddress = 801
+PolkadotGetPublicKey = 802
+PolkadotPublicKey = 903
