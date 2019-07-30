@@ -1,4 +1,4 @@
-# WIP: Aeternity
+# WIP: Polkadot
 
 **Disclaimer: this feature is still under development! Do not use on the aeternity mainnet**
 
