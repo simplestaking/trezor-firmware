@@ -1,6 +1,6 @@
 # WIP: Polkadot
 
-**Disclaimer: this feature is still under development! Do not use on the aeternity mainnet**
+**Disclaimer: this feature is still under development**
 
 ### OS
 This demo works on the following operating systems:
