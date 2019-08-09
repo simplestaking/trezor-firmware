@@ -41,3 +41,20 @@ message PolkadotGetPublicKey {
 message PolkadotPublicKey {
     optional string public_key = 1;          // b58 encoded Tezos public key with prefix
 }
+
+message PolkadotSignTx {
+    repeated uint32 address_n = 1;
+    optional bytes address = 2;             // source?
+    optional bytes block_hash = 3;
+    optional uint32 block_num = 4;
+    optional uint32 era = 5;
+    optional bytes genesis_hash = 6;
+    optional uint32 nonce = 7;
+    optional uint32 tip = 8;
+    optional uint32 version = 9;
+
+    message PolkadotBalanceTransfer {
+        optional bytes destination = 1;
+        optional uint32 value = 2;
+    }
+}
