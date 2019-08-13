@@ -194,9 +194,12 @@ from .PinMatrixAck import PinMatrixAck
 from .PinMatrixRequest import PinMatrixRequest
 from .Ping import Ping
 from .PolkadotAddress import PolkadotAddress
+from .PolkadotBalanceTransfer import PolkadotBalanceTransfer
 from .PolkadotGetAddress import PolkadotGetAddress
 from .PolkadotGetPublicKey import PolkadotGetPublicKey
 from .PolkadotPublicKey import PolkadotPublicKey
+from .PolkadotSignTx import PolkadotSignTx
+from .PolkadotSignedTx import PolkadotSignedTx
 from .PublicKey import PublicKey
 from .RecoveryDevice import RecoveryDevice
 from .ResetDevice import ResetDevice

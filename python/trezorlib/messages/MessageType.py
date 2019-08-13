@@ -180,4 +180,6 @@ BinanceSignedTx = 709
 PolkadotGetAddress = 800
 PolkadotAddress = 801
 PolkadotGetPublicKey = 802
-PolkadotPublicKey = 903
+PolkadotPublicKey = 803
+PolkadotSignTx = 804
+PolkadotSignedTx = 805

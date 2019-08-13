@@ -242,7 +242,7 @@ enum MessageType {
     MessageType_PolkadotGetAddress = 800 [(wire_in) = true];
     MessageType_PolkadotAddress = 801 [(wire_out) = true];
     MessageType_PolkadotGetPublicKey = 802 [(wire_in) = true];
-    MessageType_PolkadotPublicKey = 903 [(wire_out) = true];
-//    MessageType_PolkadotSignTx = 804 [(wire_in) = true];
-//    MessageType_PolkadotSignedTx = 805 [(wire_out) = true];
+    MessageType_PolkadotPublicKey = 803 [(wire_out) = true];
+    MessageType_PolkadotSignTx = 804 [(wire_in) = true];
+    MessageType_PolkadotSignedTx = 805 [(wire_out) = true];
 }

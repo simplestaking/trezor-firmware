@@ -44,17 +44,20 @@ message PolkadotPublicKey {
 
 message PolkadotSignTx {
     repeated uint32 address_n = 1;
-    optional bytes address = 2;             // source?
-    optional bytes block_hash = 3;
-    optional uint32 block_num = 4;
-    optional uint32 era = 5;
-    optional bytes genesis_hash = 6;
-    optional uint32 nonce = 7;
-    optional uint32 tip = 8;
-    optional uint32 version = 9;
+    optional uint32 era = 2;
+    optional uint32 nonce = 3;
+    optional uint32 tip = 4;
+    optional bytes checkpoint_hash = 5;
+    optional PolkadotBalanceTransfer transfer = 6;
 
     message PolkadotBalanceTransfer {
-        optional bytes destination = 1;
-        optional uint32 value = 2;
+        optional uint32 module_index = 1;
+        optional uint32 call_index = 2;
+        optional bytes destination = 3;
+        optional uint32 value = 4;
     }
+}
+
+message PolkadotSignedTx {
+    optional string signature = 1;
 }
