@@ -9,5 +9,5 @@ CURVE = "ed25519"
 def boot() -> None:
     ns = [[CURVE, HARDENED | 44, HARDENED | 357]]
     wire.add(MessageType.PolkadotGetAddress, __name__, "get_address", ns)
-    # wire.add(MessageType.PolkadotSignTx, __name__, "sign_tx", ns)
+    wire.add(MessageType.PolkadotSignTx, __name__, "sign_tx", ns)
     wire.add(MessageType.PolkadotGetPublicKey, __name__, "get_public_key", ns)

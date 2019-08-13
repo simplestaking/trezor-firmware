@@ -9,17 +9,17 @@ if __debug__:
         Dict, List, Optional = None, None, None  # type: ignore
 
 
-class PolkadotPublicKey(p.MessageType):
-    MESSAGE_WIRE_TYPE = 803
+class PolkadotSignedTx(p.MessageType):
+    MESSAGE_WIRE_TYPE = 805
 
     def __init__(
         self,
-        public_key: str = None,
+        signature: str = None,
     ) -> None:
-        self.public_key = public_key
+        self.signature = signature
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('public_key', p.UnicodeType, 0),
+            1: ('signature', p.UnicodeType, 0),
         }
