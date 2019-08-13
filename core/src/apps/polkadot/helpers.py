@@ -49,8 +49,7 @@ def scale_int_encode(w: Writer, value, compact=True):
         else:
             print('Big int')
             no_of_bytes = get_byte_count(value)
-            value = value << 2 | 0x03
-            w.append((no_of_bytes - 4) & 0xFF)
+            w.append(((no_of_bytes - 4) << 2 | 0x03) & 0xFF)
             for i in range(0, no_of_bytes * 8, 8):
                 print(i)
                 w.append((value >> i) & 0xFF)
