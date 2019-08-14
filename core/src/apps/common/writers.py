@@ -65,6 +65,27 @@ def write_uint64_le(w: Writer, n: int) -> int:
     return 8
 
 
+def write_uint128_le(w: Writer, n: int) -> int:
+    ensure(0 <= n <= 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
+    w.append(n & 0xFF)
+    w.append((n >> 8) & 0xFF)
+    w.append((n >> 16) & 0xFF)
+    w.append((n >> 24) & 0xFF)
+    w.append((n >> 32) & 0xFF)
+    w.append((n >> 40) & 0xFF)
+    w.append((n >> 48) & 0xFF)
+    w.append((n >> 56) & 0xFF)
+    w.append((n >> 64) & 0xFF)
+    w.append((n >> 72) & 0xFF)
+    w.append((n >> 80) & 0xFF)
+    w.append((n >> 88) & 0xFF)
+    w.append((n >> 96) & 0xFF)
+    w.append((n >> 104) & 0xFF)
+    w.append((n >> 112) & 0xFF)
+    w.append((n >> 120) & 0xFF)
+    return 8
+
+
 def write_uint64_be(w: Writer, n: int) -> int:
     ensure(0 <= n <= 0xFFFFFFFFFFFFFFFF)
     w.append((n >> 56) & 0xFF)

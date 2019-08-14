@@ -55,6 +55,16 @@ def scale_int_encode(w: Writer, value, compact=True):
                 w.append((value >> i) & 0xFF)
 
 
+def scale_list_encode(w, tx_elements: list):
+    scale_int_encode(w, len(tx_elements))
+    for e in tx_elements:
+        scale_int_encode(w, e)
+
+
+def scale_encode_address(address):
+    return bytes([0xff]) + address
+
+
 def get_byte_count(val: int):
     if val == 0:
         return 1

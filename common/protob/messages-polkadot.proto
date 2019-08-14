@@ -44,7 +44,7 @@ message PolkadotPublicKey {
 
 message PolkadotSignTx {
     repeated uint32 address_n = 1;
-    optional uint32 era = 2;
+    optional bytes era = 2;
     optional uint32 nonce = 3;
     optional uint32 tip = 4;
     optional bytes checkpoint_hash = 5;

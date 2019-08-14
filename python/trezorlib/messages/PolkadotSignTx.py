@@ -17,7 +17,7 @@ class PolkadotSignTx(p.MessageType):
     def __init__(
         self,
         address_n: List[int] = None,
-        era: int = None,
+        era: bytes = None,
         nonce: int = None,
         tip: int = None,
         checkpoint_hash: bytes = None,
@@ -34,7 +34,7 @@ class PolkadotSignTx(p.MessageType):
     def get_fields(cls) -> Dict:
         return {
             1: ('address_n', p.UVarintType, p.FLAG_REPEATED),
-            2: ('era', p.UVarintType, 0),
+            2: ('era', p.BytesType, 0),
             3: ('nonce', p.UVarintType, 0),
             4: ('tip', p.UVarintType, 0),
             5: ('checkpoint_hash', p.BytesType, 0),

@@ -12,17 +12,18 @@ def trezor_connect():
 
 client = trezor_connect()
 
-path = parse_path("m/44'/357'/0'/0'/0'")
+path = parse_path("m/44'/357'/1'")
+print(polkadot.get_address(client, path))
 
 msg = dict_to_proto(messages.PolkadotSignTx, {
-    "era": 0x20,
-    "nonce": 0x1,
+    "era": "00",
+    "nonce": 0x01,
     "tip": 0x00,
-    "checkpoint_hash": "2e2d",
+    "checkpoint_hash": "dcd1346701ca8396496e52aa2785b1748deb6db09551b72159dcb3e08991025b",
     "transfer": {
-        "module_index": 0x5,
-        "call_index": 0x0,
-        "dest": "1111",
+        "module_index": 0x05,
+        "call_index": 0x00,
+        "destination": "2c31ede147b6ba608a5f89bf218cb9962914895980b1881a4e4b7bd3a0faa2a6",
         "value": 0x01
     }
 })

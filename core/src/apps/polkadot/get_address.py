@@ -5,13 +5,16 @@ from trezor.messages.PolkadotAddress import PolkadotAddress
 from apps.common import paths, seed
 from apps.common.layout import address_n_to_str, show_address, show_qr
 from apps.polkadot import CURVE, helpers
-
+from ubinascii import hexlify
 
 async def get_address(ctx, msg, keychain):
     # TODO: validate path
 
     node = keychain.derive(msg.address_n, CURVE)
     pk = seed.remove_ed25519_prefix(node.public_key())
+
+    # Debug
+    print(hexlify(pk).decode())
 
     # add address prefix to public key
     pk = bytearray([42]) + pk
