@@ -20,14 +20,16 @@ class PolkadotSignTx(p.MessageType):
         era: bytes = None,
         nonce: int = None,
         tip: int = None,
-        checkpoint_hash: bytes = None,
+        genesis_hash: bytes = None,
+        block_hash: bytes = None,
         transfer: PolkadotBalanceTransfer = None,
     ) -> None:
         self.address_n = address_n if address_n is not None else []
         self.era = era
         self.nonce = nonce
         self.tip = tip
-        self.checkpoint_hash = checkpoint_hash
+        self.genesis_hash = genesis_hash
+        self.block_hash = block_hash
         self.transfer = transfer
 
     @classmethod
@@ -37,6 +39,7 @@ class PolkadotSignTx(p.MessageType):
             2: ('era', p.BytesType, 0),
             3: ('nonce', p.UVarintType, 0),
             4: ('tip', p.UVarintType, 0),
-            5: ('checkpoint_hash', p.BytesType, 0),
-            6: ('transfer', PolkadotBalanceTransfer, 0),
+            5: ('genesis_hash', p.BytesType, 0),
+            6: ('block_hash', p.BytesType, 0),
+            7: ('transfer', PolkadotBalanceTransfer, 0),
         }

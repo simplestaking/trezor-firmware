@@ -47,8 +47,9 @@ message PolkadotSignTx {
     optional bytes era = 2;
     optional uint32 nonce = 3;
     optional uint32 tip = 4;
-    optional bytes checkpoint_hash = 5;
-    optional PolkadotBalanceTransfer transfer = 6;
+    optional bytes genesis_hash = 5;
+    optional bytes block_hash = 6;
+    optional PolkadotBalanceTransfer transfer = 7;
 
     message PolkadotBalanceTransfer {
         optional uint32 module_index = 1;
