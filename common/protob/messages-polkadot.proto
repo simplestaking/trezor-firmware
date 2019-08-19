@@ -61,4 +61,6 @@ message PolkadotSignTx {
 
 message PolkadotSignedTx {
     optional string signature = 1;
+    optional string encoded_value = 2;
+    optional string encoded_nonce = 3;
 }

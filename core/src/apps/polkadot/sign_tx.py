@@ -21,9 +21,10 @@ async def sign_tx(ctx, msg, keychain):
     w = bytearray()
 
     # debug
-    z = bytearray()
-    helpers.scale_int_encode(z, 142)
-    print('Nonce: ' + hexlify(z).decode())
+    enc_nonce = bytearray()
+    helpers.scale_int_encode(enc_nonce, msg.nonce)
+    enc_val = bytearray()
+    helpers.scale_int_encode(enc_val, msg.transfer.value)
 
     method_len = len(msg.transfer.destination) + 3 + helpers.get_byte_count(msg.transfer.value)
 
@@ -51,5 +52,5 @@ async def sign_tx(ctx, msg, keychain):
     hex_data = hexlify(w).decode()
     print('SIGNED DATA: ' + hex_data)
 
-    return PolkadotSignedTx(signature=hex_sig)
+    return PolkadotSignedTx(signature=hex_sig, encoded_nonce=hexlify(enc_nonce).decode(), encoded_value=hexlify(enc_val).decode())
 

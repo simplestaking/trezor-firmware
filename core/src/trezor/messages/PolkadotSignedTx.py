@@ -15,11 +15,17 @@ class PolkadotSignedTx(p.MessageType):
     def __init__(
         self,
         signature: str = None,
+        encoded_value: str = None,
+        encoded_nonce: str = None,
     ) -> None:
         self.signature = signature
+        self.encoded_value = encoded_value
+        self.encoded_nonce = encoded_nonce
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
             1: ('signature', p.UnicodeType, 0),
+            2: ('encoded_value', p.UnicodeType, 0),
+            3: ('encoded_nonce', p.UnicodeType, 0),
         }
