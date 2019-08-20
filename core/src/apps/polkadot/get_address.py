@@ -16,18 +16,8 @@ async def get_address(ctx, msg, keychain):
     # Debug
     print(hexlify(pk).decode())
 
-    # add address prefix to public key
-    pk = bytearray([42]) + pk
-
-    # add SS8 prefix to the public key (this is the input for the blake2 hash function)
-    to_hash = b'SS58PRE' + pk
-
-    # get the blake2 hash and append the first 2 bytes as checksum to the address
-    pkh = hashlib.blake2b(bytes(to_hash)).digest()
-    final = pk + pkh[:2]
-
-    # encode the address
-    address = base58.encode(bytes(final))
+    # TODO: move to helpers
+    address = helpers.ss58_encode(pk)
 
     if msg.show_display:
         desc = address_n_to_str(msg.address_n)

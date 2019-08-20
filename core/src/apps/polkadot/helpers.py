@@ -9,6 +9,7 @@ from trezor.crypto import base58
 
 from apps.common import HARDENED
 from apps.common.writers import write_uint8
+from trezor.crypto import hashlib
 
 
 def base58_encode_check(payload, prefix=None):
@@ -21,6 +22,21 @@ def base58_encode_check(payload, prefix=None):
 def validate_full_path(path: list) -> bool:
     # TODO
     pass
+
+
+def ss58_encode(public_key):
+    # add address prefix to public key
+    pk = bytearray([42]) + public_key
+
+    # add SS8 prefix to the public key (this is the input for the blake2 hash function)
+    to_hash = b'SS58PRE' + pk
+
+    # get the blake2 hash and append the first 2 bytes as checksum to the address
+    pkh = hashlib.blake2b(bytes(to_hash)).digest()
+    final = pk + pkh[:2]
+
+    # encode the address
+    return base58.encode(bytes(final))
 
 
 def scale_int_encode(w: Writer, value, compact=True):

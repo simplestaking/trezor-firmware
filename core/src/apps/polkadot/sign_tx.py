@@ -7,16 +7,16 @@ from trezor.messages.PolkadotSignedTx import PolkadotSignedTx
 
 from apps.common import paths
 from apps.common.writers import write_bytes, write_uint8, write_uint64_le, write_uint128_le
-from apps.polkadot import helpers, CURVE
+from apps.polkadot import helpers, CURVE, layout
 from ubinascii import hexlify
-from trezor.crypto import bip39
+
 
 async def sign_tx(ctx, msg, keychain):
 
     node = keychain.derive(msg.address_n, CURVE)
 
-    seed = bip39.seed('all all all all all all all all all all all all', "m'/357'/0'")
-    print('SEED: ' + hexlify(seed).decode())
+    if msg.transfer:
+        await layout.require_confirm_tx(ctx, msg.transfer.destination, msg.transfer.value)
 
     w = bytearray()
 

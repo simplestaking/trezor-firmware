@@ -33,6 +33,7 @@ msg = dict_to_proto(messages.PolkadotSignTx, msg_dict)
 
 signed = polkadot.sign_tx(client, path, msg)
 
+# just for demonstration purposes (no python api for now)
 transaction = '0x390281ff' \
               + sender \
               + signed.signature \
