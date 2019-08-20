@@ -15,6 +15,8 @@ client = trezor_connect()
 path = parse_path("m/44'/357'/0'")
 sender = polkadot.get_public_key(client, path)
 
+# edit nonce here
+# Do not edit anything else! (demo)
 msg_dict = {
     "era": "00",
     "nonce": 0x01,
@@ -25,7 +27,7 @@ msg_dict = {
         "module_index": 0x03,
         "call_index": 0x00,
         "destination": "2c31ede147b6ba608a5f89bf218cb9962914895980b1881a4e4b7bd3a0faa2a6",
-        "value": 3000000000000
+        "value": 3000000000000  # keep at 3 miliDOT
     }
 }
 
