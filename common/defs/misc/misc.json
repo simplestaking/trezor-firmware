@@ -216,5 +216,16 @@
             "OMNI Trezor": "https://omnitrezor.com/"
         },
         "blockchain_link": null
+    },
+    {
+        "name": "Cosmos",
+        "shortcut": "ATOM",
+        "slip44": "118",
+        "curve": "secp256k1",
+        "decimals": 8,
+        "links": {
+            "Homepage": "https://cosmos.network/"
+        },
+        "blockchain_link": null
     }
 ]
