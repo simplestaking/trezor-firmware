@@ -9,6 +9,7 @@ CORE_PROTOBUF_SOURCES="\
     $PROTOB/messages-bitcoin.proto \
     $PROTOB/messages-cardano.proto \
     $PROTOB/messages-common.proto \
+    $PROTOB/messages-cosmos.proto \
     $PROTOB/messages-crypto.proto \
     $PROTOB/messages-debug.proto \
     $PROTOB/messages-eos.proto \

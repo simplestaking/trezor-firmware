@@ -38,6 +38,10 @@ from .CosiCommit import CosiCommit
 from .CosiCommitment import CosiCommitment
 from .CosiSign import CosiSign
 from .CosiSignature import CosiSignature
+from .CosmosAddress import CosmosAddress
+from .CosmosGetAddress import CosmosGetAddress
+from .CosmosGetPublicKey import CosmosGetPublicKey
+from .CosmosPublicKey import CosmosPublicKey
 from .DebugLinkDecision import DebugLinkDecision
 from .DebugLinkFlashErase import DebugLinkFlashErase
 from .DebugLinkGetState import DebugLinkGetState

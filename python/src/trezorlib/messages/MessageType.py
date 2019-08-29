@@ -177,3 +177,7 @@ BinanceTransferMsg = 706
 BinanceOrderMsg = 707
 BinanceCancelMsg = 708
 BinanceSignedTx = 709
+CosmosGetAddress = 800
+CosmosAddress = 801
+CosmosGetPublicKey = 802
+CosmosPublicKey = 803
