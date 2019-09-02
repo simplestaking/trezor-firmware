@@ -41,3 +41,57 @@ message CosmosGetPublicKey {
 message CosmosPublicKey {
     optional string public_key = 1;          // bech32 encoded Cosmos public key with prefix
 }
+
+message CosmosSignTx {
+    optional uint32 address_n = 1;
+    optional uint32 account_number = 2;
+    optional string chain_id = 3;
+    optional uint32 fee = 4;
+    optional uint64 sequence = 5;
+    optional string memo = 6;
+    optional Msg msg = 7;
+
+    message Msg {
+        optional string type = 1;
+        optional string from = 2;
+        optional bytes to = 3;
+        optional Amount amount = 4;
+    }
+
+    message Amount {
+        optional string denom = 1;
+        optional uint32 amount = 2;
+    }
+}
+
+message CosmosSignedTx {
+    optional string signature = 1;
+}
+
+
+
+/*  "type": "cosmos-sdk/StdTx",
+"value": {
+    "msg": [
+      {
+        "type": "cosmos-sdk/MsgSend",
+        "value": {
+          "from_address": "cosmos1u4jc75qlrk2tsjak2leqngh6yvxrlca8ateprj",
+          "to_address": "cosmos1jm4nfgjuawuhzu02g7lwhy328h47v5jsdr0x6r",
+          "amount": [
+            {
+              "denom": "muon",
+              "amount": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "fee": {
+      "amount": [],
+      "gas": "200000"
+    },
+    "signatures": null,
+    "memo": ""
+  }
+} */
