@@ -46,21 +46,26 @@ message CosmosSignTx {
     optional uint32 address_n = 1;
     optional uint32 account_number = 2;
     optional string chain_id = 3;
-    optional uint32 fee = 4;
+    optional Fee fee = 4;
     optional uint64 sequence = 5;
     optional string memo = 6;
-    optional Msg msg = 7;
+    optional Msg msgs = 7;
 
     message Msg {
         optional string type = 1;
-        optional string from = 2;
-        optional bytes to = 3;
+        optional string from_address = 2;
+        optional bytes to_address = 3;
         optional Amount amount = 4;
     }
 
     message Amount {
         optional string denom = 1;
         optional uint32 amount = 2;
+    }
+
+    message Fee {
+        optional Amount amount = 1;
+        optional uint32 gas = 2;
     }
 }
 
