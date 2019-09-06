@@ -43,7 +43,7 @@ message CosmosPublicKey {
 }
 
 message CosmosSignTx {
-    optional uint32 address_n = 1;
+    repeated uint32 address_n = 1;
     optional uint32 account_number = 2;
     optional string chain_id = 3;
     optional Fee fee = 4;
@@ -54,7 +54,7 @@ message CosmosSignTx {
     message Msg {
         optional string type = 1;
         optional string from_address = 2;
-        optional bytes to_address = 3;
+        optional string to_address = 3;
         optional Amount amount = 4;
     }
 

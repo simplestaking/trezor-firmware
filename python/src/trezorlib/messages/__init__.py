@@ -2,6 +2,7 @@
 # fmt: off
 
 from .Address import Address
+from .Amount import Amount
 from .ApplyFlags import ApplyFlags
 from .ApplySettings import ApplySettings
 from .BackupDevice import BackupDevice
@@ -42,6 +43,8 @@ from .CosmosAddress import CosmosAddress
 from .CosmosGetAddress import CosmosGetAddress
 from .CosmosGetPublicKey import CosmosGetPublicKey
 from .CosmosPublicKey import CosmosPublicKey
+from .CosmosSignTx import CosmosSignTx
+from .CosmosSignedTx import CosmosSignedTx
 from .DebugLinkDecision import DebugLinkDecision
 from .DebugLinkFlashErase import DebugLinkFlashErase
 from .DebugLinkGetState import DebugLinkGetState
@@ -97,6 +100,7 @@ from .EthereumTxRequest import EthereumTxRequest
 from .EthereumVerifyMessage import EthereumVerifyMessage
 from .Failure import Failure
 from .Features import Features
+from .Fee import Fee
 from .FirmwareErase import FirmwareErase
 from .FirmwareRequest import FirmwareRequest
 from .FirmwareUpload import FirmwareUpload
@@ -173,6 +177,7 @@ from .MoneroTransactionSignInputRequest import MoneroTransactionSignInputRequest
 from .MoneroTransactionSourceEntry import MoneroTransactionSourceEntry
 from .MoneroTransferDetails import MoneroTransferDetails
 from .MoneroWatchKey import MoneroWatchKey
+from .Msg import Msg
 from .MultisigRedeemScriptType import MultisigRedeemScriptType
 from .NEMAddress import NEMAddress
 from .NEMAggregateModification import NEMAggregateModification

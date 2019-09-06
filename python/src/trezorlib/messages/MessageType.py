@@ -181,3 +181,5 @@ CosmosGetAddress = 800
 CosmosAddress = 801
 CosmosGetPublicKey = 802
 CosmosPublicKey = 803
+CosmosSignTx = 804
+CosmosSignedTx = 805

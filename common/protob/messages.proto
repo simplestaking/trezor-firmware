@@ -243,6 +243,6 @@ enum MessageType {
     MessageType_CosmosAddress = 801 [(wire_out) = true];
     MessageType_CosmosGetPublicKey = 802 [(wire_in) = true];
     MessageType_CosmosPublicKey = 803 [(wire_out) = true];
-    // MessageType_CosmosSignTx = 804 [(wire_in) = true];
-    // MessageType_CosmosSignedTx = 805 [(wire_out) = true];
+    MessageType_CosmosSignTx = 804 [(wire_in) = true];
+    MessageType_CosmosSignedTx = 805 [(wire_out) = true];
 }
