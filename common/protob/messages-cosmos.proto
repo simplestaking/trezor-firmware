@@ -40,6 +40,7 @@ message CosmosGetPublicKey {
  */
 message CosmosPublicKey {
     optional string public_key = 1;          // bech32 encoded Cosmos public key with prefix
+    optional string public_key_hex = 2;      // hex encoded Cosmos public key
 }
 
 message CosmosSignTx {

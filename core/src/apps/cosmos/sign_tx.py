@@ -18,8 +18,11 @@ async def sign_tx(ctx, msg, keychain):
     msg_bytes = helpers.construct_json_for_signing(msg)
 
     encoded = msg_bytes.encode('utf-8')
+    print(encoded)
     h = hashlib.sha256(encoded).digest()
-    signature = secp256k1.sign(node.private_key(), h)
-    signature_hex = hexlify(signature).decode()
+
+    # ignore the last byte (a.k.a v component)
+    signature = secp256k1.sign(node.private_key(), h)[:-1]
+    signature_hex = hexlify(signature).decode('utf-8')
 
     return CosmosSignedTx(signature=signature_hex)

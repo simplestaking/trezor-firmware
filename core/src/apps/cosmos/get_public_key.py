@@ -8,6 +8,7 @@ from trezor.utils import chunks
 from apps.common.confirm import require_confirm
 from apps.cosmos import CURVE
 from trezor.crypto.bech32 import bech32_encode, convertbits
+from ubinascii import hexlify
 
 
 async def get_public_key(ctx, msg, keychain):
@@ -16,13 +17,15 @@ async def get_public_key(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
     pk = node.public_key()
 
-    pk = b'0xEB5AE987' + pk
+    pk_hex = hexlify(pk).decode()
+
+    # pk = b'0xEB5AE987' + pk
     pk_prefixed = bech32_encode('cosmospub', convertbits(pk, 8, 5))
 
     if msg.show_display:
         await _show_cosmos_pubkey(ctx, pk_prefixed)
 
-    return CosmosPublicKey(public_key=pk_prefixed)
+    return CosmosPublicKey(public_key=pk_prefixed, public_key_hex=pk_hex)
 
 
 async def _show_cosmos_pubkey(ctx, pubkey):

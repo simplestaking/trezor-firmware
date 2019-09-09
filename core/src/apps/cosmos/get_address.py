@@ -13,7 +13,7 @@ async def get_address(ctx, msg, keychain):
 
     node = keychain.derive(msg.address_n, CURVE)
     public_key = node.public_key()
-    h = sha256(b'eb5ae987' + public_key).digest()
+    h = sha256(public_key).digest()
     h = ripemd160(h).digest()
 
     address = bech32_encode('cosmos', convertbits(h, 8, 5))

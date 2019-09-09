@@ -9,7 +9,7 @@ def get_address(client, address_n, show_display=False):
     )
 
 
-@expect(messages.CosmosPublicKey, field="public_key")
+@expect(messages.CosmosPublicKey)
 def get_public_key(client, address_n, show_display=False):
     return client.call(
         messages.CosmosGetPublicKey(address_n=address_n, show_display=show_display)

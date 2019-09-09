@@ -16,11 +16,14 @@ class CosmosPublicKey(p.MessageType):
     def __init__(
         self,
         public_key: str = None,
+        public_key_hex: str = None,
     ) -> None:
         self.public_key = public_key
+        self.public_key_hex = public_key_hex
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
             1: ('public_key', p.UnicodeType, 0),
+            2: ('public_key_hex', p.UnicodeType, 0),
         }

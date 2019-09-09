@@ -20,7 +20,7 @@ def construct_json_for_signing(msg) -> str:
 
 def construct_fee_json(msg) -> str:
     return FEE_BLUEPRINT.format(
-        amount_fee=msg.fee.amount.amount,
+        amount_fee='',  # CHANGE back
         gas=msg.fee.gas
     )
 
