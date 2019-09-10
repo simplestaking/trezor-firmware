@@ -15,12 +15,12 @@ class CosmosSignedTx(p.MessageType):
 
     def __init__(
         self,
-        signature: str = None,
+        signature: bytes = None,
     ) -> None:
         self.signature = signature
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('signature', p.UnicodeType, 0),
+            1: ('signature', p.BytesType, 0),
         }
