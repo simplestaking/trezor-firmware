@@ -1,35 +1,85 @@
-# Trezor Firmware
+# WIP: Cosmos
 
-![img](https://repository-images.githubusercontent.com/180590388/968e6880-6538-11e9-9da6-4aef78157e94)
+**Disclaimer: this feature is still under development**
 
-## Contribute
+### OS
+This demo works on the following operating systems:
+- Mac OS X
+- Ubuntu/Debian
 
-Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
+### Prerequisites
 
-### Security vulnerability disclosure
+- Python3
+- pip3
+- pipenv
 
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+### Prepare the environment
 
-### Issue Labels
+Prepare the environment for the trezor emulator
 
-#### Priority
 
-Label     | Meaning (SLA)
-----------|--------------
-P1 Urgent | The current release + potentially immediate hotfix (30 days)
-P2 High   | The next release (60 days)
-P3 Medium | Within the next 3 releases (90 days)
-P4 Low    | Anything outside the next 3 releases (120 days)
+    git clone --recursive https://github.com/simplestaking/trezor-firmware.git
+    cd trezor-firmware
+    git chceckout cosmos
+    pipenv sync
+    cd python
+    pipenv run make gen
+    python3 setup.py develop
+    cd ../core
+    pipenv run make build_unix
 
-#### Severity
 
-Label       | Impact
-------------|-------
-S1 Blocker  | Outage, broken feature with no workaround
-S2 Critical | Broken feature, workaround too complex & unacceptable
-S3 Major    | Broken feature, workaround acceptable
-S4 Low      | Functionality inconvenience or cosmetic issue
 
-### CI
+### Setup a test mnemonic seed on the emulator
 
-The complete test suite is running on our internal GitLab CI. If you are an external contributor, we also have a [Travis instance](https://travis-ci.org/trezor/trezor-firmware) where a small subset of tests is running as well - mostly style and easy fast checks, which are quite common to fail for new contributors.
+Launch the emulator
+
+    ./emu.sh
+    
+In a new terminal, type:
+
+    trezorctl recovery-device
+
+This will ask you to enter a new bip39 mnemonic. Select the 12 word choice and enter the word "all" 12 times.
+
+
+### Install gaia cli to connect to the testnet
+
+Install golang. For this project **version 1.12.1+** is needed. Follow the official instructions on https://golang.org/doc/install
+
+Next set up the environment variables:
+
+    mkdir -p $HOME/go/bin
+    echo "export GOPATH=$HOME/go" >> ~/.bash_profile
+    echo "export GOBIN=$GOPATH/bin" >> ~/.bash_profile
+    echo "export PATH=$PATH:$GOBIN" >> ~/.bash_profile
+    source ~/.bash_profile
+
+Next we install gaia binaries
+
+    mkdir -p $GOPATH/src/github.com/cosmos
+    cd $GOPATH/src/github.com/cosmos
+    git clone https://github.com/cosmos/cosmos-sdk
+    cd cosmos-sdk && git checkout master
+    make tools install
+
+Verify that everything is ok by executing
+
+    gaiacli version --long
+
+The output should be similar to
+
+    cosmos-sdk: 0.33.0
+    git commit: 7b4104aced52aa5b59a96c28b5ebeea7877fc4f0
+    vendor hash: 5db0df3e24cf10545c84f462a24ddc61882aa58f
+    build tags: netgo ledger
+    go version go1.12 linux/amd64
+
+Next thing is to set up a node or connect to a trusted remote node, we do the later.
+
+    gaiacli config node http://46.101.160.245:26657
+    gaiacli config trust-node true
+
+### Transaction demo
+
+All is set up! Now just run the script cosmos_test.py in tests/device_tests and it will send 1000 tokens from the trezor address cosmos1evwx7u5xllw5fvyl6wpkmqszl6ql6ta8xd06rn (m/44'/118'/0')
