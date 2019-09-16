@@ -57,25 +57,11 @@ message TezosSignTx {
     optional TezosDelegationOp delegation = 6;      // Tezos delegation operation
     optional TezosProposalOp proposal = 7;          // Tezos proposal operation
     optional TezosBallotOp ballot = 8;              // Tezos ballot operation
-    /*
-     * Tezos contract ID
-     */
-    message TezosContractID {
-        optional TezosContractType tag = 1;
-        optional bytes hash = 2;                    // Implicit = 21B, originated = 20B + 1B padding
-        /*
-         * Type of Tezos Contract type
-         */
-        enum TezosContractType {
-            Implicit = 0;
-            Originated = 1;
-        }
-    }
     /**
      * Structure representing information for reveal
      */
     message TezosRevealOp {
-        optional TezosContractID source = 1;
+        optional bytes source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
@@ -86,28 +72,39 @@ message TezosSignTx {
      * Structure representing information for transaction
      */
     message TezosTransactionOp {
-        optional TezosContractID source = 1;
+        optional bytes source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
         optional uint64 amount = 6;
-        optional TezosContractID destination = 7;
-        optional bytes parameters = 8;
+        optional bytes destination = 7;
+        optional TezosEntryPoint entrypoint= 8;
+        optional bytes entrypoint_size = 9;
+        optional bytes parameters = 10;
+
+        enum TezosEntryPoint {
+            Default = 0;
+            Root = 1;
+            Do = 2;
+            SetDelegate = 3;
+            RemoveDelegate = 4;
+            Named = 255;
+        }
     }
     /**
      * Structure representing information for origination
      */
     message TezosOriginationOp {
-        optional TezosContractID source = 1;
+        optional bytes source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
-        optional bytes manager_pubkey = 6;
+        // optional bytes manager_pubkey = 6;
         optional uint64 balance = 7;
-        optional bool spendable = 8;
-        optional bool delegatable = 9;
+        // optional bool spendable = 8;
+        // optional bool delegatable = 9;
         optional bytes delegate = 10;
         optional bytes script = 11;
     }
@@ -115,7 +112,7 @@ message TezosSignTx {
      * Structure representing information for delegation
      */
     message TezosDelegationOp {
-        optional TezosContractID source = 1;
+        optional bytes source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
@@ -126,7 +123,7 @@ message TezosSignTx {
      * Structure representing information for proposal
      */
     message TezosProposalOp {
-        optional bytes source = 1;                  //Contains only public_key_hash, not to be confused with TezosContractID
+        optional bytes source = 1;
         optional uint64 period = 2;
         repeated bytes proposals = 4;
     }
@@ -134,7 +131,7 @@ message TezosSignTx {
      * Structure representing information for ballot
      */
     message TezosBallotOp {
-        optional bytes source = 1;                  //Contains only public_key_hash, not to be confused with TezosContractID
+        optional bytes source = 1;
         optional uint64 period = 2;
         optional bytes proposal = 3;
         optional TezosBallotType ballot = 4;
