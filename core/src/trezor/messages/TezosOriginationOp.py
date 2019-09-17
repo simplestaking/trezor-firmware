@@ -27,6 +27,7 @@ class TezosOriginationOp(p.MessageType):
         delegatable: bool = None,
         delegate: bytes = None,
         script: bytes = None,
+        source_babylon: bytes = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -39,6 +40,7 @@ class TezosOriginationOp(p.MessageType):
         self.delegatable = delegatable
         self.delegate = delegate
         self.script = script
+        self.source_babylon = source_babylon
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -54,4 +56,5 @@ class TezosOriginationOp(p.MessageType):
             9: ('delegatable', p.BoolType, 0),
             10: ('delegate', p.BytesType, 0),
             11: ('script', p.BytesType, 0),
+            12: ('source_babylon', p.BytesType, 0),
         }

@@ -8,8 +8,10 @@ if __debug__:
     try:
         from typing import Dict, List, Optional
         from typing_extensions import Literal  # noqa: F401
+        EnumTypeTezosEntryPoint = Literal[0, 1, 2, 3, 4, 255]
     except ImportError:
         Dict, List, Optional = None, None, None  # type: ignore
+        EnumTypeTezosEntryPoint = None  # type: ignore
 
 
 class TezosTransactionOp(p.MessageType):
@@ -23,7 +25,11 @@ class TezosTransactionOp(p.MessageType):
         storage_limit: int = None,
         amount: int = None,
         destination: TezosContractID = None,
+        entrypoint: EnumTypeTezosEntryPoint = None,
+        entrypoint_size: bytes = None,
         parameters: bytes = None,
+        source_babylon: bytes = None,
+        destination_babylon: bytes = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -32,7 +38,11 @@ class TezosTransactionOp(p.MessageType):
         self.storage_limit = storage_limit
         self.amount = amount
         self.destination = destination
+        self.entrypoint = entrypoint
+        self.entrypoint_size = entrypoint_size
         self.parameters = parameters
+        self.source_babylon = source_babylon
+        self.destination_babylon = destination_babylon
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -44,5 +54,9 @@ class TezosTransactionOp(p.MessageType):
             5: ('storage_limit', p.UVarintType, 0),
             6: ('amount', p.UVarintType, 0),
             7: ('destination', TezosContractID, 0),
-            8: ('parameters', p.BytesType, 0),
+            8: ('entrypoint', p.EnumType("TezosEntryPoint", (0, 1, 2, 3, 4, 255)), 0),
+            9: ('entrypoint_size', p.BytesType, 0),
+            10: ('parameters', p.BytesType, 0),
+            11: ('source_babylon', p.BytesType, 0),
+            12: ('destination_babylon', p.BytesType, 0),
         }

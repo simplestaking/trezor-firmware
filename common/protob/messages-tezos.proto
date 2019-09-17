@@ -50,6 +50,7 @@ message TezosPublicKey {
 message TezosSignTx {
     repeated uint32 address_n = 1;                  // BIP-32 path to derive the key from master node
     optional bytes branch = 2;
+    optional string protocol_hash = 9;
 
     optional TezosRevealOp reveal = 3;              // Tezos reveal operation (may be bundled with other op)
     optional TezosTransactionOp transaction = 4;    // Tezos transaction operation
@@ -57,31 +58,48 @@ message TezosSignTx {
     optional TezosDelegationOp delegation = 6;      // Tezos delegation operation
     optional TezosProposalOp proposal = 7;          // Tezos proposal operation
     optional TezosBallotOp ballot = 8;              // Tezos ballot operation
+    /*
+     * Tezos contract ID
+     */
+     message TezosContractID {
+        optional TezosContractType tag = 1;
+        optional bytes hash = 2;                    // Implicit = 21B, originated = 20B + 1B padding
+        /*
+         * Type of Tezos Contract type
+         */
+        enum TezosContractType {
+            Implicit = 0;
+            Originated = 1;
+        }
+    }
     /**
      * Structure representing information for reveal
      */
     message TezosRevealOp {
-        optional bytes source = 1;
+        optional TezosContractID source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
         optional bytes public_key = 6;
+        optional bytes source_babylon = 7;
     }
     /**
      * Structure representing information for transaction
      */
     message TezosTransactionOp {
-        optional bytes source = 1;
+        optional TezosContractID source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
         optional uint64 amount = 6;
-        optional bytes destination = 7;
+        optional TezosContractID destination = 7;
         optional TezosEntryPoint entrypoint= 8;
         optional bytes entrypoint_size = 9;
         optional bytes parameters = 10;
+        optional bytes source_babylon = 11;
+        optional bytes destination_babylon = 12;
 
         enum TezosEntryPoint {
             Default = 0;
@@ -96,28 +114,30 @@ message TezosSignTx {
      * Structure representing information for origination
      */
     message TezosOriginationOp {
-        optional bytes source = 1;
+        optional TezosContractID source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
-        // optional bytes manager_pubkey = 6;
+        optional bytes manager_pubkey = 6;
         optional uint64 balance = 7;
-        // optional bool spendable = 8;
-        // optional bool delegatable = 9;
+        optional bool spendable = 8;
+        optional bool delegatable = 9;
         optional bytes delegate = 10;
         optional bytes script = 11;
+        optional bytes source_babylon = 12;
     }
     /**
      * Structure representing information for delegation
      */
     message TezosDelegationOp {
-        optional bytes source = 1;
+        optional TezosContractID source = 1;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
         optional uint64 storage_limit = 5;
         optional bytes delegate = 6;
+        optional bytes source_babylon = 7;
     }
     /**
      * Structure representing information for proposal

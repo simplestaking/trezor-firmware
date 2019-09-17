@@ -11,6 +11,7 @@ from apps.common.writers import write_bytes, write_uint8, write_uint32_be
 from apps.tezos import CURVE, helpers, layout
 
 PROPOSAL_LENGTH = const(32)
+BABYLON_HASH = 'PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU'
 
 
 async def sign_tx(ctx, msg, keychain):
@@ -21,14 +22,17 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        to = _get_address_by_tag(msg.transaction.destination)
+        to = _get_address_from_contract(msg.transaction.destination)
         await layout.require_confirm_tx(ctx, to, msg.transaction.amount)
         await layout.require_confirm_fee(
             ctx, msg.transaction.amount, msg.transaction.fee
         )
 
     elif msg.origination is not None:
-        source = _get_address_by_tag(msg.origination.source)
+        if msg.protocol_hash == BABYLON_HASH:
+            source = _get_address_by_tag(msg.origination.source_babylon)
+        else:
+            source = _get_address_from_contract(msg.origination.source)
         await layout.require_confirm_origination(ctx, source)
 
         # if we are immediately delegating contract
@@ -41,7 +45,10 @@ async def sign_tx(ctx, msg, keychain):
         )
 
     elif msg.delegation is not None:
-        source = _get_address_by_tag(msg.delegation.source)
+        if msg.protocol_hash == BABYLON_HASH:
+            source = _get_address_by_tag(msg.delegation.source_babylon)
+        else:
+            source = _get_address_from_contract(msg.delegation.source)
 
         delegate = None
         if msg.delegation.delegate is not None:
@@ -102,16 +109,16 @@ def _get_address_by_tag(address_hash):
     raise wire.DataError("Invalid tag in address hash")
 
 
-# def _get_address_from_contract(address):
-#     if address.tag == TezosContractType.Implicit:
-#         return _get_address_by_tag(address.hash)
+def _get_address_from_contract(address):
+    if address.tag == TezosContractType.Implicit:
+        return _get_address_by_tag(address.hash)
 
-#     elif address.tag == TezosContractType.Originated:
-#         return helpers.base58_encode_check(
-#             address.hash[:-1], prefix=helpers.TEZOS_ORIGINATED_ADDRESS_PREFIX
-#         )
+    elif address.tag == TezosContractType.Originated:
+        return helpers.base58_encode_check(
+            address.hash[:-1], prefix=helpers.TEZOS_ORIGINATED_ADDRESS_PREFIX
+        )
 
-#     raise wire.DataError("Invalid contract type")
+    raise wire.DataError("Invalid contract type")
 
 
 def _get_protocol_hash(proposal):
@@ -133,25 +140,32 @@ def _get_operation_bytes(w: bytearray, msg):
     # when the account sends first operation in lifetime,
     # we need to reveal its public key
     if msg.reveal is not None:
-        _encode_common(w, msg.reveal, "reveal")
+        _encode_common(w, msg.reveal, "reveal", msg.protocol_hash)
         write_bytes(w, msg.reveal.public_key)
 
     # transaction operation
     if msg.transaction is not None:
-        _encode_common(w, msg.transaction, "transaction")
+        _encode_common(w, msg.transaction, "transaction", msg.protocol_hash)
         _encode_zarith(w, msg.transaction.amount)
-        write_bytes(w, msg.transaction.destination)
+        _encode_contract_id(w, msg.transaction.destination)
         _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
     elif msg.origination is not None:
-        _encode_common(w, msg.origination, "origination")
-        write_bytes(w, msg.origination.manager_pubkey)
+        _encode_common(w, msg.origination, "origination", msg.protocol_hash)
+        if msg.protocol_hash != BABYLON_HASH:
+            write_bytes(w, msg.origination.manager_pubkey)
         _encode_zarith(w, msg.origination.balance)
+        if msg.protocol_hash != BABYLON_HASH:
+            helpers.write_bool(w, msg.origination.spendable)
+            helpers.write_bool(w, msg.origination.delegatable)
         _encode_data_with_bool_prefix(w, msg.origination.delegate)
-        write_bytes(w, msg.origination.script)
+        if msg.protocol_hash == BABYLON_HASH:
+            write_bytes(w, msg.origination.script)
+        else:
+            _encode_data_with_bool_prefix(w, msg.origination.script)
     # delegation operation
     elif msg.delegation is not None:
-        _encode_common(w, msg.delegation, "delegation")
+        _encode_common(w, msg.delegation, "delegation", msg.protocol_hash)
         _encode_data_with_bool_prefix(w, msg.delegation.delegate)
     elif msg.proposal is not None:
         _encode_proposal(w, msg.proposal)
@@ -159,14 +173,25 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_ballot(w, msg.ballot)
 
 
-def _encode_common(w: bytearray, operation, str_operation):
-    operation_tags = {"reveal": 107, "transaction": 108, "origination": 109, "delegation": 110}
+def _encode_common(w: bytearray, operation, str_operation, protocol):
+    if protocol == BABYLON_HASH:
+        operation_tags = {"reveal": 107, "transaction": 108, "origination": 109, "delegation": 110}
+    else:
+        operation_tags = {"reveal": 7, "transaction": 8, "origination": 9, "delegation": 10}
     write_uint8(w, operation_tags[str_operation])
-    write_bytes(w, operation.source)
+    if protocol == BABYLON_HASH:
+        write_bytes(w, operation.source_babylon)
+    else:
+        _encode_contract_id(w, operation.source)
     _encode_zarith(w, operation.fee)
     _encode_zarith(w, operation.counter)
     _encode_zarith(w, operation.gas_limit)
     _encode_zarith(w, operation.storage_limit)
+
+
+def _encode_contract_id(w: bytearray, contract_id):
+    write_uint8(w, contract_id.tag)
+    write_bytes(w, contract_id.hash)
 
 
 def _encode_data_with_bool_prefix(w: bytearray, data):

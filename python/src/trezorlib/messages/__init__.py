@@ -271,4 +271,5 @@ from . import RequestType
 from . import ResetDeviceBackupType
 from . import TezosBallotType
 from . import TezosContractType
+from . import TezosEntryPoint
 from . import WordRequestType

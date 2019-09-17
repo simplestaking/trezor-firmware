@@ -22,6 +22,7 @@ class TezosRevealOp(p.MessageType):
         gas_limit: int = None,
         storage_limit: int = None,
         public_key: bytes = None,
+        source_babylon: bytes = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -29,6 +30,7 @@ class TezosRevealOp(p.MessageType):
         self.gas_limit = gas_limit
         self.storage_limit = storage_limit
         self.public_key = public_key
+        self.source_babylon = source_babylon
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -39,4 +41,5 @@ class TezosRevealOp(p.MessageType):
             4: ('gas_limit', p.UVarintType, 0),
             5: ('storage_limit', p.UVarintType, 0),
             6: ('public_key', p.BytesType, 0),
+            7: ('source_babylon', p.BytesType, 0),
         }
