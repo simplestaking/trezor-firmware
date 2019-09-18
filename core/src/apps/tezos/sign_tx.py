@@ -148,7 +148,13 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_common(w, msg.transaction, "transaction", msg.protocol_hash)
         _encode_zarith(w, msg.transaction.amount)
         _encode_contract_id(w, msg.transaction.destination)
-        _encode_data_with_bool_prefix(w, msg.transaction.parameters)
+        # otocit
+        if msg.protocol_hash == BABYLON_HASH:
+            _encode_data_with_bool_prefix(msg.transaction.entrypoint)
+            if msg.transaction.entrypoint == 255:
+                write_uint8(w, msg.transaction.entrypoint_size)
+        else:
+            _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
     elif msg.origination is not None:
         _encode_common(w, msg.origination, "origination", msg.protocol_hash)
