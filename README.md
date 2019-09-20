@@ -1,35 +1,55 @@
-# Trezor Firmware
+# WIP: Aeternity
 
-![img](https://repository-images.githubusercontent.com/180590388/968e6880-6538-11e9-9da6-4aef78157e94)
+**Disclaimer: this feature is still under development! Do not use on the aeternity mainnet**
 
-## Contribute
+### OS
+This demo works on the following operating systems:
+- Mac OS X
+- Ubuntu/Debian
 
-Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
+### Prerequisites
 
-### Security vulnerability disclosure
+- Python3
+- pip3
+- pipenv
 
-Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+### Prepare the environment
 
-### Issue Labels
+Install the aeternity python sdk
 
-#### Priority
+    pip3 install aepp-sdk
 
-Label     | Meaning (SLA)
-----------|--------------
-P1 Urgent | The current release + potentially immediate hotfix (30 days)
-P2 High   | The next release (60 days)
-P3 Medium | Within the next 3 releases (90 days)
-P4 Low    | Anything outside the next 3 releases (120 days)
+Prepare the environment for the trezor emulator
 
-#### Severity
 
-Label       | Impact
-------------|-------
-S1 Blocker  | Outage, broken feature with no workaround
-S2 Critical | Broken feature, workaround too complex & unacceptable
-S3 Major    | Broken feature, workaround acceptable
-S4 Low      | Functionality inconvenience or cosmetic issue
+    git clone --recursive https://github.com/simplestaking/trezor-firmware.git
+    cd trezor-firmware
+    git chceckout aeternity
+    pipenv sync
+    cd python
+    pipenv run make gen
+    python3 setup.py develop
+    cd ../core
+    pipenv run make build_unix
 
-### CI
 
-The complete test suite is running on our internal GitLab CI. If you are an external contributor, we also have a [Travis instance](https://travis-ci.org/trezor/trezor-firmware) where a small subset of tests is running as well - mostly style and easy fast checks, which are quite common to fail for new contributors.
+
+### Setup a test mnemonic seed on the emulator
+
+Launch the emulator
+
+    ./emu.sh
+    
+In a new terminal, type:
+
+    trezorctl recovery-device
+
+This will ask you to enter a new bip39 mnemonic. Select the 12 word choice and enter the word "all" 12 times.
+
+
+### Spend transaction via Trezor T
+
+All is set up. Now launch the demo script that will send 1 milliAE from address "ak_31USV3rnR2UXfJwLUeezNoYscezfeXg8RYDir7kQUzfCbaShi" to "ak_27GArnMWZFadMReB8q47Y1UvDFGT2g475bLBu8pv36taYLRWsU"
+
+    cd trezor-firmware/python/trezorlib/tests/device_tests/
+    python3 aeternity_transaction_demo.py
