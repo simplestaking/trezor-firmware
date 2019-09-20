@@ -440,3 +440,100 @@ class TestMsgTezosSignTx:
             resp.signature
             == "edsigu43ztCKfgeHybP78pjdMBpNHXKtL9TmpymMSLYi5ss6hSYbZBeTR7rgNqwuq4iT8cEj8KHsii5jraAsK4mF3x8AqGqCP1Y"
         )
+
+    def test_tezos_babylon_kt_delegation(self, client):
+        resp = tezos.sign_tx(
+            client,
+            TEZOS_PATH_10,
+            dict_to_proto(
+                messages.TezosSignTx,
+                {
+                    "branch": "6f2867511d04e00a0aa0fe8d4240a0755a49d265262a3ad76f6124531d8e8cb5",
+                    "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
+                    "transaction": {
+                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "fee": 2894,
+                        "counter": 195,
+                        "gas_limit": 25917,
+                        "storage_limit": 0,
+                        "amount": 0,
+                        "destination": {
+                            "tag": 1,
+                            "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
+                        },
+                        "legacy_delegation": {
+                            "delegate": "00a31e81ac3425310e3274a4698a793b2839dc0afa",
+                        }
+                    },
+                },
+            ),
+        )
+        assert (
+            resp.signature
+            == "edsigtsFTxYMoeRbzCCRg2ck4ChSrNNms99RF5KvWw1X5VSmhCTn3akccxjEQFLg982p8LvRdwhLUoEaekEF6MrZhyEooXXxvdz"
+        )
+
+    def test_tezos_babylon_kt_remove_delegation(self, client):
+        resp = tezos.sign_tx(
+            client,
+            TEZOS_PATH_10,
+            dict_to_proto(
+                messages.TezosSignTx,
+                {
+                    "branch": "38f027151adbf750cf05f5e7259fd7e1d8122a7f76be5204c0db5eb93757c3e4",
+                    "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
+                    "transaction": {
+                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "fee": 2857,
+                        "counter": 196,
+                        "gas_limit": 25822,
+                        "storage_limit": 0,
+                        "amount": 0,
+                        "destination": {
+                            "tag": 1,
+                            "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
+                        },
+                        "legacy_delegation": {
+                            "delegate": None,
+                        }
+                    },
+                },
+            ),
+        )
+        assert(
+            resp.signature
+            == "edsigu5B11SxhJqcvhwgHvLKfEb8wwtnJeFfBRocTaVs4RGiiW21c8nQ3F6xuVRRGLg4p51YtikvK4E3bTsHE5t5guoaDNjMToK"
+        )
+
+    def test_tezos_babylon_kt_transfer(self, client):
+        resp = tezos.sign_tx(
+            client,
+            TEZOS_PATH_10,
+            dict_to_proto(
+                messages.TezosSignTx,
+                {
+                    "branch": "dafa0777baf8a81cef1e2511398638703f8353d3572f835e87a078124c757ea8",
+                    "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
+                    "transaction": {
+                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "fee": 2941,
+                        "counter": 195,
+                        "gas_limit": 26283,
+                        "storage_limit": 0,
+                        "amount": 0,
+                        "destination": {
+                            "tag": 1,
+                            "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
+                        },
+                        "legacy_transfer": {
+                            "value": "20000",
+                            "recipient": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        }
+                    },
+                },
+            ),
+        )
+        assert(
+            resp.signature
+            == "edsigu5B11SxhJqcvhwgHvLKfEb8wwtnJeFfBRocTaVs4RGiiW21c8nQ3F6xuVRRGLg4p51YtikvK4E3bTsHE5t5guoaDNjMToK"
+        )

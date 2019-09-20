@@ -150,9 +150,15 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_contract_id(w, msg.transaction.destination)
         # otocit
         if msg.protocol_hash == BABYLON_HASH:
-            _encode_data_with_bool_prefix(msg.transaction.entrypoint)
-            if msg.transaction.entrypoint == 255:
-                write_uint8(w, msg.transaction.entrypoint_size)
+            if msg.transaction.legacy_delegation is not None:
+                if msg.transaction.legacy_delegation.delegate is not None:
+                    _encode_data_with_bool_prefix(w, helpers.construct_delegation_op(msg.transaction.legacy_delegation.delegate))
+                else:
+                    _encode_data_with_bool_prefix(w, helpers.construct_delegation_removal_op())
+            else:
+                _encode_data_with_bool_prefix(w, msg.transaction.entrypoint)
+                if msg.transaction.entrypoint == 255:
+                    write_uint8(w, msg.transaction.entrypoint_size)
         else:
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation

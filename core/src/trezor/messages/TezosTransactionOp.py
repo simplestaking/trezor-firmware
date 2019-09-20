@@ -3,6 +3,8 @@
 import protobuf as p
 
 from .TezosContractID import TezosContractID
+from .TezosTransactionOpLegacyDelegation import TezosTransactionOpLegacyDelegation
+from .TezosTransactionOpLegacyTransfer import TezosTransactionOpLegacyTransfer
 
 if __debug__:
     try:
@@ -29,7 +31,8 @@ class TezosTransactionOp(p.MessageType):
         entrypoint_size: bytes = None,
         parameters: bytes = None,
         source_babylon: bytes = None,
-        destination_babylon: bytes = None,
+        legacy_delegation: TezosTransactionOpLegacyDelegation = None,
+        legacy_transfer: TezosTransactionOpLegacyTransfer = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -42,7 +45,8 @@ class TezosTransactionOp(p.MessageType):
         self.entrypoint_size = entrypoint_size
         self.parameters = parameters
         self.source_babylon = source_babylon
-        self.destination_babylon = destination_babylon
+        self.legacy_delegation = legacy_delegation
+        self.legacy_transfer = legacy_transfer
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -58,5 +62,6 @@ class TezosTransactionOp(p.MessageType):
             9: ('entrypoint_size', p.BytesType, 0),
             10: ('parameters', p.BytesType, 0),
             11: ('source_babylon', p.BytesType, 0),
-            12: ('destination_babylon', p.BytesType, 0),
+            12: ('legacy_delegation', TezosTransactionOpLegacyDelegation, 0),
+            13: ('legacy_transfer', TezosTransactionOpLegacyTransfer, 0),
         }

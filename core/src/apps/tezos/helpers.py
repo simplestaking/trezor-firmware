@@ -5,6 +5,8 @@ from trezor.crypto import base58
 from apps.common import HARDENED
 from apps.common.writers import write_uint8
 
+from ubinascii import unhexlify
+
 TEZOS_AMOUNT_DIVISIBILITY = const(6)
 TEZOS_ED25519_ADDRESS_PREFIX = "tz1"
 TEZOS_ORIGINATED_ADDRESS_PREFIX = "KT1"
@@ -25,6 +27,9 @@ TEZOS_PREFIX_BYTES = {
     # protocol hash
     "P": [2, 170],
 }
+
+LEAGACY_KT_DELEGATION_OPBYTES = '020000002f020000002a0320053d036d0743035d0a00000015{destination}0346034e031b'
+LEGACY_KT_DELEGATION_REMOVE_OPBYTES = '0200000013020000000e0320053d036d053e035d034e031b'
 
 
 def base58_encode_check(payload, prefix=None):
@@ -71,3 +76,11 @@ def write_bool(w: bytearray, boolean: bool):
         write_uint8(w, 255)
     else:
         write_uint8(w, 0)
+
+
+def construct_delegation_op(delegate):
+    return unhexlify(LEAGACY_KT_DELEGATION_OPBYTES.format(destination=delegate))
+
+
+def construct_delegation_removal_op():
+    return unhexlify(LEGACY_KT_DELEGATION_REMOVE_OPBYTES)

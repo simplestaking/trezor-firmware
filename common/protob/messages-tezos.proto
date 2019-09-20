@@ -99,7 +99,17 @@ message TezosSignTx {
         optional bytes entrypoint_size = 9;
         optional bytes parameters = 10;
         optional bytes source_babylon = 11;
-        optional bytes destination_babylon = 12;
+        optional TezosTransactionOpLegacyDelegation legacy_delegation = 12;
+        optional TezosTransactionOpLegacyTransfer legacy_transfer = 13;
+
+        message TezosTransactionOpLegacyDelegation {
+            optional string delegate = 1;
+        }
+
+        message TezosTransactionOpLegacyTransfer {
+            optional uint32 value = 1;
+            optional uint32 recipient = 2;
+        }
 
         enum TezosEntryPoint {
             Default = 0;
