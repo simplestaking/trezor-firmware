@@ -274,9 +274,9 @@ def _encode_kt_transfer(w: bytearray, legacy_transfer):
     do_tag = 2
     michelson_tag = 2
 
-    # value_zarith = bytearray()
-    # _encode_zarith(value_zarith, legacy_transfer.value)
-    sequence_length = MICHELSON_LENGTH + 4
+    value_natural = bytearray()
+    _encode_natural(value_natural, legacy_transfer.value)
+    sequence_length = MICHELSON_LENGTH + len(value_natural)
     argument_length = sequence_length + 5  # tag and sequence_length (1 byte + 4 bytes)
 
     helpers.write_bool(w, True)
@@ -299,23 +299,3 @@ def _encode_kt_transfer(w: bytearray, legacy_transfer):
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['UNIT']))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['TRANSFER_TOKENS']))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['CONS']))
-
-    # 0x02: tag of the "%do" entrypoint
-    # <4 bytes>: length of the argument
-    # 0x02: Michelson sequence
-    # <4 bytes>: length of the sequence
-    # 0x0320: DROP
-    # 0x053d: NIL
-    # 0x036d: operation
-    # 0x0743: PUSH
-    # 0x035d: key_hash
-    # 0x0a: Byte sequence
-    # 0x00000015: Length of the sequence (21 bytes)
-    # <21 bytes>: <destination>
-    # 0x031e: IMPLICIT_ACCOUNT
-    # 0x0743: PUSH
-    # 0x036a: mutez
-    # <amount>: Amout to be transfered
-    # 0x034f: UNIT
-    # 0x034d: TRANSFER_TOKENS
-    # 0x031b: CONS
