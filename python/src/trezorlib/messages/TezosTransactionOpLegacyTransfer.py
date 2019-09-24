@@ -15,7 +15,7 @@ class TezosTransactionOpLegacyTransfer(p.MessageType):
     def __init__(
         self,
         value: int = None,
-        recipient: int = None,
+        recipient: bytes = None,
     ) -> None:
         self.value = value
         self.recipient = recipient
@@ -24,5 +24,5 @@ class TezosTransactionOpLegacyTransfer(p.MessageType):
     def get_fields(cls) -> Dict:
         return {
             1: ('value', p.UVarintType, 0),
-            2: ('recipient', p.UVarintType, 0),
+            2: ('recipient', p.BytesType, 0),
         }

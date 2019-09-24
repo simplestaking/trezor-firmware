@@ -526,7 +526,7 @@ class TestMsgTezosSignTx:
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
                         "legacy_transfer": {
-                            "value": "20000",
+                            "value": 20000,
                             "recipient": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
                         }
                     },
@@ -535,5 +535,5 @@ class TestMsgTezosSignTx:
         )
         assert(
             resp.signature
-            == "edsigu5B11SxhJqcvhwgHvLKfEb8wwtnJeFfBRocTaVs4RGiiW21c8nQ3F6xuVRRGLg4p51YtikvK4E3bTsHE5t5guoaDNjMToK"
+            == "edsigu2MMdtkWyRofmSwB5gZuF3P6rzbuWXjWHmsG6v2NQgfgKrDoEZ6czUUXXrCCoQL3TfuTX1r3epCXpvVMcFKuRcjBL83RFN"
         )

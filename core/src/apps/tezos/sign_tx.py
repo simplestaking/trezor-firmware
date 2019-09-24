@@ -84,6 +84,8 @@ async def sign_tx(ctx, msg, keychain):
     watermark = bytes([3])
     wm_opbytes = watermark + opbytes
     wm_opbytes_hash = hashlib.blake2b(wm_opbytes, outlen=32).digest()
+    if msg.transaction is not None and msg.transaction.legacy_transfer is not None:
+        print(wm_opbytes)
 
     signature = ed25519.sign(node.private_key(), wm_opbytes_hash)
 
@@ -155,6 +157,8 @@ def _get_operation_bytes(w: bytearray, msg):
                     _encode_data_with_bool_prefix(w, helpers.construct_delegation_op(msg.transaction.legacy_delegation.delegate))
                 else:
                     _encode_data_with_bool_prefix(w, helpers.construct_delegation_removal_op())
+            elif msg.transaction.legacy_transfer is not None:
+                _encode_kt_transfer(w, msg.transaction.legacy_transfer)
             else:
                 _encode_data_with_bool_prefix(w, msg.transaction.entrypoint)
                 if msg.transaction.entrypoint == 255:
@@ -245,3 +249,73 @@ def _encode_ballot(w: bytearray, ballot):
     write_uint32_be(w, ballot.period)
     write_bytes(w, ballot.proposal)
     write_uint8(w, ballot.ballot)
+
+
+def _encode_natural(w: bytearray, num):
+    natural_tag = 0
+    write_uint8(w, natural_tag)
+
+    byte = num & 63
+    modified = num >> 6
+
+    if num < 0:
+        byte = byte | 64
+
+    if modified == 0:
+        write_uint8(w, byte)
+    else:
+        write_uint8(w, 128 | byte)
+        _encode_zarith(w, modified)
+
+
+def _encode_kt_transfer(w: bytearray, legacy_transfer):
+    MICHELSON_LENGTH = 48
+    ADDRESS_LENGTH = 21
+    do_tag = 2
+    michelson_tag = 2
+
+    # value_zarith = bytearray()
+    # _encode_zarith(value_zarith, legacy_transfer.value)
+    sequence_length = MICHELSON_LENGTH + 4
+    argument_length = sequence_length + 5  # tag and sequence_length (1 byte + 4 bytes)
+
+    helpers.write_bool(w, True)
+    write_uint8(w, do_tag)
+    write_uint32_be(w, argument_length)
+    write_uint8(w, michelson_tag)
+    write_uint32_be(w, sequence_length)
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['DROP']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['NIL']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['operation']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['PUSH']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['key_hash']))
+    write_bytes(w, bytes([10]))  # byte sequence
+    write_uint32_be(w, ADDRESS_LENGTH)
+    write_bytes(w, legacy_transfer.recipient)
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['IMPLICIT_ACCOUNT']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['PUSH']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['mutez']))
+    _encode_natural(w, legacy_transfer.value)
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['UNIT']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['TRANSFER_TOKENS']))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES['CONS']))
+
+    # 0x02: tag of the "%do" entrypoint
+    # <4 bytes>: length of the argument
+    # 0x02: Michelson sequence
+    # <4 bytes>: length of the sequence
+    # 0x0320: DROP
+    # 0x053d: NIL
+    # 0x036d: operation
+    # 0x0743: PUSH
+    # 0x035d: key_hash
+    # 0x0a: Byte sequence
+    # 0x00000015: Length of the sequence (21 bytes)
+    # <21 bytes>: <destination>
+    # 0x031e: IMPLICIT_ACCOUNT
+    # 0x0743: PUSH
+    # 0x036a: mutez
+    # <amount>: Amout to be transfered
+    # 0x034f: UNIT
+    # 0x034d: TRANSFER_TOKENS
+    # 0x031b: CONS

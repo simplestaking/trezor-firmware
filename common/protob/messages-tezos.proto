@@ -107,8 +107,8 @@ message TezosSignTx {
         }
 
         message TezosTransactionOpLegacyTransfer {
-            optional uint32 value = 1;
-            optional uint32 recipient = 2;
+            optional uint64 value = 1;
+            optional bytes recipient = 2;
         }
 
         enum TezosEntryPoint {
