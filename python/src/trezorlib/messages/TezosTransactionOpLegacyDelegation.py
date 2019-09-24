@@ -14,12 +14,12 @@ class TezosTransactionOpLegacyDelegation(p.MessageType):
 
     def __init__(
         self,
-        delegate: str = None,
+        delegate: bytes = None,
     ) -> None:
         self.delegate = delegate
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('delegate', p.UnicodeType, 0),
+            1: ('delegate', p.BytesType, 0),
         }

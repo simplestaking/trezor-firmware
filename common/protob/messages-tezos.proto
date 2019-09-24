@@ -103,7 +103,7 @@ message TezosSignTx {
         optional TezosTransactionOpLegacyTransfer legacy_transfer = 13;
 
         message TezosTransactionOpLegacyDelegation {
-            optional string delegate = 1;
+            optional bytes delegate = 1;
         }
 
         message TezosTransactionOpLegacyTransfer {

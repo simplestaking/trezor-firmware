@@ -33,7 +33,7 @@ MICHELSON_INSTRUCTION_BYTES = {
     'DROP': [3, 32],  # '0320'
     'NIL': [5, 61],  # '053d'
     'operation': [3, 109],  # '036d'
-    'NONE': [3, 62],  # '053e'
+    'NONE': [5, 62],  # '053e'
     'key_hash': [3, 93],  # '035d'
     'SET_DELEGATE': [3, 78],  # '034e'
     'CONS': [3, 27],  # '031b'
@@ -45,9 +45,8 @@ MICHELSON_INSTRUCTION_BYTES = {
     'SOME': [3, 70],  # '0346'
 }
 
-
-LEAGACY_KT_DELEGATION_OPBYTES = '020000002f020000002a0320053d036d0743035d0a00000015{destination}0346034e031b'
-LEGACY_KT_DELEGATION_REMOVE_OPBYTES = '0200000013020000000e0320053d036d053e035d034e031b'
+DO_ENTRYPOINT_TAG = const(2)
+MICHELSON_SEQUENCE_TAG = const(2)
 
 
 def base58_encode_check(payload, prefix=None):
@@ -94,11 +93,3 @@ def write_bool(w: bytearray, boolean: bool):
         write_uint8(w, 255)
     else:
         write_uint8(w, 0)
-
-
-def construct_delegation_op(delegate):
-    return unhexlify(LEAGACY_KT_DELEGATION_OPBYTES.format(destination=delegate))
-
-
-def construct_delegation_removal_op():
-    return unhexlify(LEGACY_KT_DELEGATION_REMOVE_OPBYTES)
