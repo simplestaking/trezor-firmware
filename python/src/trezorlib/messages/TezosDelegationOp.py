@@ -22,7 +22,6 @@ class TezosDelegationOp(p.MessageType):
         gas_limit: int = None,
         storage_limit: int = None,
         delegate: bytes = None,
-        source_babylon: bytes = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -30,7 +29,6 @@ class TezosDelegationOp(p.MessageType):
         self.gas_limit = gas_limit
         self.storage_limit = storage_limit
         self.delegate = delegate
-        self.source_babylon = source_babylon
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -41,5 +39,4 @@ class TezosDelegationOp(p.MessageType):
             4: ('gas_limit', p.UVarintType, 0),
             5: ('storage_limit', p.UVarintType, 0),
             6: ('delegate', p.BytesType, 0),
-            7: ('source_babylon', p.BytesType, 0),
         }

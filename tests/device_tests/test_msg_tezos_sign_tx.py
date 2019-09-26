@@ -334,7 +334,10 @@ class TestMsgTezosSignTx:
                     "branch": "ce69c5713dac3537254e7be59759cf59c15abd530d10501ccf9028a5786314cf",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "transaction": {
-                        "source_babylon": "0002298c03ed7d454a101eb7022bc95f7e5f41ac78",
+                        "source": {
+                            "tag": 0,
+                            "hash": "0002298c03ed7d454a101eb7022bc95f7e5f41ac78",
+                        },
                         "fee": 50000,
                         "counter": 3,
                         "gas_limit": 200,
@@ -363,7 +366,10 @@ class TestMsgTezosSignTx:
                     "branch": "f7332bca1c541848c070050487a12d0e95a83f2f0b6615c05bb31526bb5c14a1",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "delegation": {
-                        "source_babylon": "00fe24d178d020b7fd8e9e4f5887ace9f32feba4f9",
+                        "source": {
+                            "tag": 0,
+                            "hash": "00fe24d178d020b7fd8e9e4f5887ace9f32feba4f9",
+                        },
                         "fee": 1257,
                         "counter": 190,
                         "gas_limit": 10100,
@@ -388,7 +394,10 @@ class TestMsgTezosSignTx:
                     "branch": "464bc6bd8be4087b86691cce1af635c1a4ccdcd9fa8d71c55279e4395503d46e",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "origination": {
-                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "source": {
+                            "tag": 0,
+                            "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        },
                         "fee": 1391,
                         "counter": 193,
                         "gas_limit": 11137,
@@ -414,7 +423,10 @@ class TestMsgTezosSignTx:
                     "branch": "ce69c5713dac3537254e7be59759cf59c15abd530d10501ccf9028a5786314cf",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "reveal": {
-                        "source_babylon": "00a1133f154bf55df7189dede340db03bad09235fb",
+                        "source": {
+                            "tag": 0,
+                            "hash": "00a1133f154bf55df7189dede340db03bad09235fb",
+                        },
                         "fee": 1269,
                         "counter": 416223,
                         "gas_limit": 10100,
@@ -422,7 +434,10 @@ class TestMsgTezosSignTx:
                         "public_key": "0056a1c1fbae8ae7dc0c79519634d61ae67bd0ce92a9974f3d3cfe2ccf44e55b06",
                     },
                     "transaction": {
-                        "source_babylon": "0002298c03ed7d454a101eb7022bc95f7e5f41ac78",
+                        "source": {
+                            "tag": 0,
+                            "hash": "0002298c03ed7d454a101eb7022bc95f7e5f41ac78",
+                        },
                         "fee": 50000,
                         "counter": 3,
                         "gas_limit": 200,
@@ -451,7 +466,10 @@ class TestMsgTezosSignTx:
                     "branch": "6f2867511d04e00a0aa0fe8d4240a0755a49d265262a3ad76f6124531d8e8cb5",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "transaction": {
-                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "source": {
+                            "tag": 0,
+                            "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        },
                         "fee": 2894,
                         "counter": 195,
                         "gas_limit": 25917,
@@ -483,7 +501,10 @@ class TestMsgTezosSignTx:
                     "branch": "38f027151adbf750cf05f5e7259fd7e1d8122a7f76be5204c0db5eb93757c3e4",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "transaction": {
-                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "source": {
+                            "tag": 0,
+                            "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        },
                         "fee": 2857,
                         "counter": 196,
                         "gas_limit": 25822,
@@ -515,7 +536,10 @@ class TestMsgTezosSignTx:
                     "branch": "dafa0777baf8a81cef1e2511398638703f8353d3572f835e87a078124c757ea8",
                     "protocol_hash": "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU",
                     "transaction": {
-                        "source_babylon": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "source": {
+                            "tag": 0,
+                            "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        },
                         "fee": 2941,
                         "counter": 195,
                         "gas_limit": 26283,
