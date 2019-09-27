@@ -479,7 +479,7 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "legacy_delegation": {
+                        "kt_delegation": {
                             "delegate": "00a31e81ac3425310e3274a4698a793b2839dc0afa",
                         }
                     },
@@ -514,7 +514,7 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "legacy_delegation": {
+                        "kt_delegation": {
                             "delegate": None,
                         }
                     },
@@ -549,8 +549,8 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "legacy_transfer": {
-                            "value": 20000,
+                        "kt_transfer": {
+                            "amount": 20000,
                             "recipient": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
                         }
                     },

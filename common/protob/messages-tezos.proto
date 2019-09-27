@@ -95,15 +95,15 @@ message TezosSignTx {
         optional uint64 amount = 6;
         optional TezosContractID destination = 7;
         optional bytes parameters = 8;
-        optional TezosTransactionOpLegacyDelegation legacy_delegation = 10;
-        optional TezosTransactionOpLegacyTransfer legacy_transfer = 11;
+        optional TezosTransactionKtDelegationOp kt_delegation = 10;
+        optional TezosTransactionKtTransferOp kt_transfer = 11;
 
-        message TezosTransactionOpLegacyDelegation {
+        message TezosTransactionKtDelegationOp {
             optional bytes delegate = 1;
         }
 
-        message TezosTransactionOpLegacyTransfer {
-            optional uint64 value = 1;
+        message TezosTransactionKtTransferOp {
+            optional uint64 amount = 1;
             optional bytes recipient = 2;
         }
     }

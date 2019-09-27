@@ -10,16 +10,19 @@ if __debug__:
         Dict, List, Optional = None, None, None  # type: ignore
 
 
-class TezosTransactionOpLegacyDelegation(p.MessageType):
+class TezosTransactionKtTransferOp(p.MessageType):
 
     def __init__(
         self,
-        delegate: bytes = None,
+        amount: int = None,
+        recipient: bytes = None,
     ) -> None:
-        self.delegate = delegate
+        self.amount = amount
+        self.recipient = recipient
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('delegate', p.BytesType, 0),
+            1: ('amount', p.UVarintType, 0),
+            2: ('recipient', p.BytesType, 0),
         }
