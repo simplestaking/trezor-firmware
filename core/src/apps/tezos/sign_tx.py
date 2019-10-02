@@ -11,8 +11,6 @@ from apps.common.writers import write_bytes, write_uint8, write_uint32_be
 from apps.tezos import CURVE, helpers, layout
 
 PROPOSAL_LENGTH = const(32)
-# support both the old (ATHENS) and the new protocol (BABYLON)
-BABYLON_HASH = "PsBABY5HQTSkA4297zNHfsZNKtxULfL18y95qb3m53QJiXGmrbU"
 
 
 async def sign_tx(ctx, msg, keychain):
@@ -27,11 +25,10 @@ async def sign_tx(ctx, msg, keychain):
             if msg.transaction.kt_delegation.delegate is not None:
                 delegate = _get_address_by_tag(msg.transaction.kt_delegation.delegate)
                 await layout.require_confirm_delegation_baker(ctx, delegate)
-                await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
             else:
                 address = _get_address_from_contract(msg.transaction.destination)
                 await layout.require_confirm_delegation_kt_withdraw(ctx, address)
-                await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
+            await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
         elif msg.transaction.kt_transfer is not None:
             to = _get_address_by_tag(msg.transaction.kt_transfer.recipient)
             await layout.require_confirm_tx(ctx, to, msg.transaction.kt_transfer.amount)
@@ -46,7 +43,7 @@ async def sign_tx(ctx, msg, keychain):
             )
 
     elif msg.origination is not None:
-        source = _get_address_from_contract(msg.origination.source)
+        source = _get_address_by_tag(msg.origination.source)
         await layout.require_confirm_origination(ctx, source)
 
         # if we are immediately delegating contract
@@ -59,7 +56,7 @@ async def sign_tx(ctx, msg, keychain):
         )
 
     elif msg.delegation is not None:
-        source = _get_address_from_contract(msg.delegation.source)
+        source = _get_address_by_tag(msg.delegation.source)
 
         delegate = None
         if msg.delegation.delegate is not None:
@@ -159,35 +156,25 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_common(w, msg.transaction, "transaction", msg.protocol_hash)
         _encode_zarith(w, msg.transaction.amount)
         _encode_contract_id(w, msg.transaction.destination)
-        # otocit
-        if msg.protocol_hash == BABYLON_HASH:
-            # support delegation from the old scriptless contracts (now with manager.tz script)
-            if msg.transaction.kt_delegation is not None:
-                if msg.transaction.kt_delegation.delegate is not None:
-                    _encode_kt_delegation(w, msg.transaction.kt_delegation)
-                else:
-                    _encode_kt_delegation_remove(w, msg.transaction.kt_delegation)
-            # support transfer of tokens from scriptless contracts (now with manager.tz script) to implicit accounts
-            elif msg.transaction.kt_transfer is not None:
-                _encode_kt_transfer(w, msg.transaction.kt_transfer)
+
+        # support delegation from the old scriptless contracts (now with manager.tz script)
+        if msg.transaction.kt_delegation is not None:
+            if msg.transaction.kt_delegation.delegate is not None:
+                _encode_kt_delegation(w, msg.transaction.kt_delegation)
             else:
-                _encode_data_with_bool_prefix(w, msg.transaction.parameters)
+                _encode_kt_delegation_remove(w, msg.transaction.kt_delegation)
+
+        # support transfer of tokens from scriptless contracts (now with manager.tz script) to implicit accounts
+        elif msg.transaction.kt_transfer is not None:
+            _encode_kt_transfer(w, msg.transaction.kt_transfer)
         else:
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
     elif msg.origination is not None:
         _encode_common(w, msg.origination, "origination", msg.protocol_hash)
-        if msg.protocol_hash != BABYLON_HASH:
-            write_bytes(w, msg.origination.manager_pubkey)
         _encode_zarith(w, msg.origination.balance)
-        if msg.protocol_hash != BABYLON_HASH:
-            helpers.write_bool(w, msg.origination.spendable)
-            helpers.write_bool(w, msg.origination.delegatable)
         _encode_data_with_bool_prefix(w, msg.origination.delegate)
-        if msg.protocol_hash != BABYLON_HASH:
-            _encode_data_with_bool_prefix(w, msg.origination.script)
-        else:
-            write_bytes(w, msg.origination.script)
+        write_bytes(w, msg.origination.script)
 
     # delegation operation
     elif msg.delegation is not None:
@@ -200,25 +187,14 @@ def _get_operation_bytes(w: bytearray, msg):
 
 
 def _encode_common(w: bytearray, operation, str_operation, protocol):
-    if protocol == BABYLON_HASH:
-        operation_tags = {
-            "reveal": 107,
-            "transaction": 108,
-            "origination": 109,
-            "delegation": 110,
-        }
-    else:
-        operation_tags = {
-            "reveal": 7,
-            "transaction": 8,
-            "origination": 9,
-            "delegation": 10,
-        }
+    operation_tags = {
+        "reveal": 107,
+        "transaction": 108,
+        "origination": 109,
+        "delegation": 110,
+    }
     write_uint8(w, operation_tags[str_operation])
-    if protocol == BABYLON_HASH:
-        write_bytes(w, operation.source.hash)
-    else:
-        _encode_contract_id(w, operation.source)
+    write_bytes(w, operation.source)
     _encode_zarith(w, operation.fee)
     _encode_zarith(w, operation.counter)
     _encode_zarith(w, operation.gas_limit)
