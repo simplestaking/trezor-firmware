@@ -148,12 +148,12 @@ def _get_operation_bytes(w: bytearray, msg):
     # when the account sends first operation in lifetime,
     # we need to reveal its public key
     if msg.reveal is not None:
-        _encode_common(w, msg.reveal, "reveal", msg.protocol_hash)
+        _encode_common(w, msg.reveal, "reveal")
         write_bytes(w, msg.reveal.public_key)
 
     # transaction operation
     if msg.transaction is not None:
-        _encode_common(w, msg.transaction, "transaction", msg.protocol_hash)
+        _encode_common(w, msg.transaction, "transaction")
         _encode_zarith(w, msg.transaction.amount)
         _encode_contract_id(w, msg.transaction.destination)
 
@@ -171,14 +171,14 @@ def _get_operation_bytes(w: bytearray, msg):
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
     elif msg.origination is not None:
-        _encode_common(w, msg.origination, "origination", msg.protocol_hash)
+        _encode_common(w, msg.origination, "origination")
         _encode_zarith(w, msg.origination.balance)
         _encode_data_with_bool_prefix(w, msg.origination.delegate)
         write_bytes(w, msg.origination.script)
 
     # delegation operation
     elif msg.delegation is not None:
-        _encode_common(w, msg.delegation, "delegation", msg.protocol_hash)
+        _encode_common(w, msg.delegation, "delegation")
         _encode_data_with_bool_prefix(w, msg.delegation.delegate)
     elif msg.proposal is not None:
         _encode_proposal(w, msg.proposal)
@@ -186,7 +186,7 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_ballot(w, msg.ballot)
 
 
-def _encode_common(w: bytearray, operation, str_operation, protocol):
+def _encode_common(w: bytearray, operation, str_operation):
     operation_tags = {
         "reveal": 107,
         "transaction": 108,

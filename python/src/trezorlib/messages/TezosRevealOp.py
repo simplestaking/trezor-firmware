@@ -31,7 +31,7 @@ class TezosRevealOp(p.MessageType):
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('source', p.BytesType, 0),
+            7: ('source', p.BytesType, 0),
             2: ('fee', p.UVarintType, 0),
             3: ('counter', p.UVarintType, 0),
             4: ('gas_limit', p.UVarintType, 0),

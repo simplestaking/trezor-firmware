@@ -50,7 +50,6 @@ message TezosPublicKey {
 message TezosSignTx {
     repeated uint32 address_n = 1;                  // BIP-32 path to derive the key from master node
     optional bytes branch = 2;
-    optional string protocol_hash = 9;
 
     optional TezosRevealOp reveal = 3;              // Tezos reveal operation (may be bundled with other op)
     optional TezosTransactionOp transaction = 4;    // Tezos transaction operation
@@ -76,7 +75,7 @@ message TezosSignTx {
      * Structure representing information for reveal
      */
     message TezosRevealOp {
-        optional bytes source = 1;
+        optional bytes source = 7;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
@@ -87,7 +86,7 @@ message TezosSignTx {
      * Structure representing information for transaction
      */
     message TezosTransactionOp {
-        optional bytes source = 1;
+        optional bytes source = 9;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
@@ -116,7 +115,7 @@ message TezosSignTx {
      * Structure representing information for origination
      */
     message TezosOriginationOp {
-        optional bytes source = 1;
+        optional bytes source = 12;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
@@ -132,7 +131,7 @@ message TezosSignTx {
      * Structure representing information for delegation
      */
     message TezosDelegationOp {
-        optional bytes source = 1;
+        optional bytes source = 7;
         optional uint64 fee = 2;
         optional uint64 counter = 3;
         optional uint64 gas_limit = 4;
