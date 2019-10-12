@@ -3,8 +3,12 @@
 import protobuf as p
 
 from .TezosContractID import TezosContractID
-from .TezosTransactionKtDelegationOp import TezosTransactionKtDelegationOp
-from .TezosTransactionKtTransferOp import TezosTransactionKtTransferOp
+from .TezosTransactionSmartContractDelegationOp import (
+    TezosTransactionSmartContractDelegationOp,
+)
+from .TezosTransactionSmartContractTransferOp import (
+    TezosTransactionSmartContractTransferOp,
+)
 
 if __debug__:
     try:
@@ -26,8 +30,8 @@ class TezosTransactionOp(p.MessageType):
         amount: int = None,
         destination: TezosContractID = None,
         parameters: bytes = None,
-        kt_delegation: TezosTransactionKtDelegationOp = None,
-        kt_transfer: TezosTransactionKtTransferOp = None,
+        smart_contract_delegation: TezosTransactionSmartContractDelegationOp = None,
+        smart_contract_transfer: TezosTransactionSmartContractTransferOp = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -37,8 +41,8 @@ class TezosTransactionOp(p.MessageType):
         self.amount = amount
         self.destination = destination
         self.parameters = parameters
-        self.kt_delegation = kt_delegation
-        self.kt_transfer = kt_transfer
+        self.smart_contract_delegation = smart_contract_delegation
+        self.smart_contract_transfer = smart_contract_transfer
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -51,6 +55,6 @@ class TezosTransactionOp(p.MessageType):
             6: ('amount', p.UVarintType, 0),
             7: ('destination', TezosContractID, 0),
             8: ('parameters', p.BytesType, 0),
-            10: ('kt_delegation', TezosTransactionKtDelegationOp, 0),
-            11: ('kt_transfer', TezosTransactionKtTransferOp, 0),
+            10: ('smart_contract_delegation', TezosTransactionSmartContractDelegationOp, 0),
+            11: ('smart_contract_transfer', TezosTransactionSmartContractTransferOp, 0),
         }

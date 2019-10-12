@@ -282,7 +282,7 @@ class TestMsgTezosSignTx:
             == "edsigu43ztCKfgeHybP78pjdMBpNHXKtL9TmpymMSLYi5ss6hSYbZBeTR7rgNqwuq4iT8cEj8KHsii5jraAsK4mF3x8AqGqCP1Y"
         )
 
-    def test_tezos_kt_delegation(self, client):
+    def test_tezos_smart_contract_delegation(self, client):
         resp = tezos.sign_tx(
             client,
             TEZOS_PATH_10,
@@ -301,7 +301,8 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "kt_delegation": {
+                        # rework naming
+                        "smart_contract_delegation": {
                             "delegate": "00a31e81ac3425310e3274a4698a793b2839dc0afa"
                         },
                     },
@@ -332,7 +333,7 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "kt_delegation": {"delegate": None},
+                        "smart_contract_delegation": {"delegate": None},
                     },
                 },
             ),
@@ -342,7 +343,7 @@ class TestMsgTezosSignTx:
             == "edsigu5B11SxhJqcvhwgHvLKfEb8wwtnJeFfBRocTaVs4RGiiW21c8nQ3F6xuVRRGLg4p51YtikvK4E3bTsHE5t5guoaDNjMToK"
         )
 
-    def test_tezos_kt_transfer(self, client):
+    def test_tezos_smart_contract_transfer(self, client):
         resp = tezos.sign_tx(
             client,
             TEZOS_PATH_10,
@@ -361,7 +362,7 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "kt_transfer": {
+                        "smart_contract_transfer": {
                             "amount": 20000,
                             "recipient": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
                         },

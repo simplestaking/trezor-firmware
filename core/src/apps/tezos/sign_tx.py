@@ -21,19 +21,23 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        if msg.transaction.kt_delegation:
-            if msg.transaction.kt_delegation.delegate is not None:
-                delegate = _get_address_by_tag(msg.transaction.kt_delegation.delegate)
+        if msg.transaction.smart_contract_delegation:
+            if msg.transaction.smart_contract_delegation.delegate is not None:
+                delegate = _get_address_by_tag(
+                    msg.transaction.smart_contract_delegation.delegate
+                )
                 await layout.require_confirm_delegation_baker(ctx, delegate)
             else:
                 address = _get_address_from_contract(msg.transaction.destination)
                 await layout.require_confirm_delegation_kt_withdraw(ctx, address)
             await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
-        elif msg.transaction.kt_transfer is not None:
-            to = _get_address_by_tag(msg.transaction.kt_transfer.recipient)
-            await layout.require_confirm_tx(ctx, to, msg.transaction.kt_transfer.amount)
+        elif msg.transaction.smart_contract_transfer is not None:
+            to = _get_address_by_tag(msg.transaction.smart_contract_transfer.recipient)
+            await layout.require_confirm_tx(
+                ctx, to, msg.transaction.smart_contract_transfer.amount
+            )
             await layout.require_confirm_fee(
-                ctx, msg.transaction.kt_transfer.amount, msg.transaction.fee
+                ctx, msg.transaction.smart_contract_transfer.amount, msg.transaction.fee
             )
         else:
             to = _get_address_from_contract(msg.transaction.destination)
@@ -158,15 +162,19 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_contract_id(w, msg.transaction.destination)
 
         # support delegation from the old scriptless contracts (now with manager.tz script)
-        if msg.transaction.kt_delegation is not None:
-            if msg.transaction.kt_delegation.delegate is not None:
-                _encode_kt_delegation(w, msg.transaction.kt_delegation)
+        if msg.transaction.smart_contract_delegation is not None:
+            if msg.transaction.smart_contract_delegation.delegate is not None:
+                _encode_smart_contract_delegation(
+                    w, msg.transaction.smart_contract_delegation
+                )
             else:
-                _encode_kt_delegation_remove(w, msg.transaction.kt_delegation)
+                _encode_smart_contract_delegation_remove(
+                    w, msg.transaction.smart_contract_delegation
+                )
 
         # support transfer of tokens from scriptless contracts (now with manager.tz script) to implicit accounts
-        elif msg.transaction.kt_transfer is not None:
-            _encode_kt_transfer(w, msg.transaction.kt_transfer)
+        elif msg.transaction.smart_contract_transfer is not None:
+            _encode_smart_contract_transfer(w, msg.transaction.smart_contract_transfer)
         else:
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
@@ -285,35 +293,36 @@ def _encode_kt_common(w: bytearray, sequence_length, operation):
         write_uint32_be(w, ADDRESS_LENGTH)
 
 
-def _encode_kt_transfer(w: bytearray, kt_transfer):
+def _encode_smart_contract_transfer(w: bytearray, smart_contract_transfer):
     MICHELSON_LENGTH = 48
 
     value_natural = bytearray()
-    _encode_natural(value_natural, kt_transfer.amount)
+    _encode_natural(value_natural, smart_contract_transfer.amount)
     sequence_length = MICHELSON_LENGTH + len(value_natural)
 
     _encode_kt_common(w, sequence_length, "PUSH")
-    write_bytes(w, kt_transfer.recipient)
+    write_bytes(w, smart_contract_transfer.recipient)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["IMPLICIT_ACCOUNT"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["PUSH"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["mutez"]))
-    _encode_natural(w, kt_transfer.amount)
+    _encode_natural(w, smart_contract_transfer.amount)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["UNIT"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["TRANSFER_TOKENS"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))
 
 
-def _encode_kt_delegation(w: bytearray, kt_delegation):
+# smart_contract_delegation
+def _encode_smart_contract_delegation(w: bytearray, smart_contract_delegation):
     MICHELSON_LENGTH = 42  # length is fixed this time(no variable length fields)
 
     _encode_kt_common(w, MICHELSON_LENGTH, "PUSH")
-    write_bytes(w, kt_delegation.delegate)
+    write_bytes(w, smart_contract_delegation.delegate)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SOME"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SET_DELEGATE"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))
 
 
-def _encode_kt_delegation_remove(w: bytearray, kt_delegation):
+def _encode_smart_contract_delegation_remove(w: bytearray, smart_contract_delegation):
     MICHELSON_LENGTH = 14  # length is fixed this time(no variable length fields)
     _encode_kt_common(w, MICHELSON_LENGTH, "NONE")
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SET_DELEGATE"]))
