@@ -203,59 +203,59 @@ pk_decoded = "00" + pk_decoded
 
 # 018b83360512c6045c1185f8000de41302e23a220c00
 
-# resp = tezos.sign_tx(
-#     client,
-#     path,
-#     dict_to_proto(
-#         messages.TezosSignTx,
-#         {
-#             "branch": branch_decoded,
-#             "transaction": {
-#                 "source": addr_decoded,
-#                 "fee": 50000,
-#                 "counter": get_counter(addr),
-#                 "gas_limit": 20000,
-#                 "storage_limit": 200,
-#                 "amount": 0,
-#                 "destination": {
-#                     "tag": 1,
-#                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
-#                 },
-#                 "manager_smart_contract_params": {
-#                     "transfer": {
-#                         "amount": 2000000,
-#                         "destination": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
-#                     }
-#                 },
-#             },
-#         },
-#     ),
-# )
-
 resp = tezos.sign_tx(
     client,
     path,
     dict_to_proto(
         messages.TezosSignTx,
         {
-            "branch": "38f027151adbf750cf05f5e7259fd7e1d8122a7f76be5204c0db5eb93757c3e4",
+            "branch": branch_decoded,
             "transaction": {
-                "source": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
-                "fee": 2857,
-                "counter": 196,
-                "gas_limit": 25822,
-                "storage_limit": 0,
+                "source": addr_decoded,
+                "fee": 50000,
+                "counter": get_counter(addr),
+                "gas_limit": 36283,
+                "storage_limit": 2000,
                 "amount": 0,
                 "destination": {
                     "tag": 1,
                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                 },
                 "manager_smart_contract_params": {
-                    "cancel_delegate": True,
+                    "transfer": {
+                        "amount": 2000000,
+                        "destination": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                    }
                 },
             },
         },
     ),
 )
 
-# inject_operation(resp.sig_op_contents)
+# resp = tezos.sign_tx(
+#     client,
+#     path,
+#     dict_to_proto(
+#         messages.TezosSignTx,
+#         {
+#             "branch": "38f027151adbf750cf05f5e7259fd7e1d8122a7f76be5204c0db5eb93757c3e4",
+#             "transaction": {
+#                 "source": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+#                 "fee": 2857,
+#                 "counter": 196,
+#                 "gas_limit": 25822,
+#                 "storage_limit": 0,
+#                 "amount": 0,
+#                 "destination": {
+#                     "tag": 1,
+#                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
+#                 },
+#                 "manager_smart_contract_params": {
+#                     "cancel_delegate": True,
+#                 },
+#             },
+#         },
+#     ),
+# )
+
+inject_operation(resp.sig_op_contents)
