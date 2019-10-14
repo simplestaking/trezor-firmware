@@ -301,9 +301,8 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        # rework naming
-                        "smart_contract_delegation": {
-                            "delegate": "00a31e81ac3425310e3274a4698a793b2839dc0afa"
+                        "manager_smart_contract_params": {
+                            "set_delegate": "00a31e81ac3425310e3274a4698a793b2839dc0afa"
                         },
                     },
                 },
@@ -333,7 +332,9 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "smart_contract_delegation": {"delegate": None},
+                        "manager_smart_contract_params": {
+                            "cancel_delegate": True,
+                        },
                     },
                 },
             ),
@@ -362,9 +363,11 @@ class TestMsgTezosSignTx:
                             "tag": 1,
                             "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                         },
-                        "smart_contract_transfer": {
-                            "amount": 20000,
-                            "recipient": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "manager_smart_contract_params": {
+                            "transfer": {
+                                "amount": 20000,
+                                "destination": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                            }
                         },
                     },
                 },

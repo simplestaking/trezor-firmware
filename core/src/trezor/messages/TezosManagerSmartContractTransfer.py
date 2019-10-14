@@ -10,16 +10,19 @@ if __debug__:
         Dict, List, Optional = None, None, None  # type: ignore
 
 
-class TezosTransactionSmartContractDelegationOp(p.MessageType):
+class TezosManagerSmartContractTransfer(p.MessageType):
 
     def __init__(
         self,
-        delegate: bytes = None,
+        destination: bytes = None,
+        amount: int = None,
     ) -> None:
-        self.delegate = delegate
+        self.destination = destination
+        self.amount = amount
 
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('delegate', p.BytesType, 0),
+            1: ('destination', p.BytesType, 0),
+            2: ('amount', p.UVarintType, 0),
         }

@@ -232,6 +232,8 @@ from .TezosContractID import TezosContractID
 from .TezosDelegationOp import TezosDelegationOp
 from .TezosGetAddress import TezosGetAddress
 from .TezosGetPublicKey import TezosGetPublicKey
+from .TezosManagerSmartContractParams import TezosManagerSmartContractParams
+from .TezosManagerSmartContractTransfer import TezosManagerSmartContractTransfer
 from .TezosOriginationOp import TezosOriginationOp
 from .TezosProposalOp import TezosProposalOp
 from .TezosPublicKey import TezosPublicKey
@@ -239,8 +241,6 @@ from .TezosRevealOp import TezosRevealOp
 from .TezosSignTx import TezosSignTx
 from .TezosSignedTx import TezosSignedTx
 from .TezosTransactionOp import TezosTransactionOp
-from .TezosTransactionSmartContractDelegationOp import TezosTransactionSmartContractDelegationOp
-from .TezosTransactionSmartContractTransferOp import TezosTransactionSmartContractTransferOp
 from .TransactionType import TransactionType
 from .TxAck import TxAck
 from .TxInputType import TxInputType

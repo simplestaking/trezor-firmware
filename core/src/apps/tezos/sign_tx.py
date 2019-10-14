@@ -21,25 +21,35 @@ async def sign_tx(ctx, msg, keychain):
     node = keychain.derive(msg.address_n, CURVE)
 
     if msg.transaction is not None:
-        if msg.transaction.smart_contract_delegation:
-            if msg.transaction.smart_contract_delegation.delegate is not None:
+        # if the tranasction oprtation is used to execute code on a smart contract
+        if msg.transaction.manager_smart_contract_params is not None:
+            manager_smart_contract_params = msg.transaction.manager_smart_contract_params
+
+            # operation to delegate from a smart contract with manager.tz
+            if manager_smart_contract_params.set_delegate is not None:
                 delegate = _get_address_by_tag(
-                    msg.transaction.smart_contract_delegation.delegate
+                    manager_smart_contract_params.set_delegate
                 )
                 await layout.require_confirm_delegation_baker(ctx, delegate)
-            else:
+                await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
+
+            # operation to remove delegate from the smart contract with manager.tz
+            if manager_smart_contract_params.cancel_delegate is not None:
                 address = _get_address_from_contract(msg.transaction.destination)
-                await layout.require_confirm_delegation_kt_withdraw(ctx, address)
-            await layout.require_confirm_set_delegate(ctx, msg.transaction.fee)
-        elif msg.transaction.smart_contract_transfer is not None:
-            to = _get_address_by_tag(msg.transaction.smart_contract_transfer.recipient)
-            await layout.require_confirm_tx(
-                ctx, to, msg.transaction.smart_contract_transfer.amount
-            )
-            await layout.require_confirm_fee(
-                ctx, msg.transaction.smart_contract_transfer.amount, msg.transaction.fee
-            )
+                await layout.require_confirm_delegation_contract_withdraw(ctx, address)
+                await layout.require_confirm_remove_delegate(ctx, msg.transaction.fee)
+
+            # operation to transfer tokens from a smart contract to an implicit account
+            if manager_smart_contract_params.transfer is not None:
+                to = _get_address_by_tag(manager_smart_contract_params.transfer.destination)
+                await layout.require_confirm_tx(
+                    ctx, to, manager_smart_contract_params.transfer.amount
+                )
+                await layout.require_confirm_fee(
+                    ctx, manager_smart_contract_params.transfer.amount, msg.transaction.fee
+                )
         else:
+            # transactions from an implicit account
             to = _get_address_from_contract(msg.transaction.destination)
             await layout.require_confirm_tx(ctx, to, msg.transaction.amount)
             await layout.require_confirm_fee(
@@ -162,19 +172,15 @@ def _get_operation_bytes(w: bytearray, msg):
         _encode_contract_id(w, msg.transaction.destination)
 
         # support delegation from the old scriptless contracts (now with manager.tz script)
-        if msg.transaction.smart_contract_delegation is not None:
-            if msg.transaction.smart_contract_delegation.delegate is not None:
-                _encode_smart_contract_delegation(
-                    w, msg.transaction.smart_contract_delegation
-                )
-            else:
-                _encode_smart_contract_delegation_remove(
-                    w, msg.transaction.smart_contract_delegation
-                )
+        if msg.transaction.manager_smart_contract_params is not None:
+            manager_smart_contract_params = msg.transaction.manager_smart_contract_params
 
-        # support transfer of tokens from scriptless contracts (now with manager.tz script) to implicit accounts
-        elif msg.transaction.smart_contract_transfer is not None:
-            _encode_smart_contract_transfer(w, msg.transaction.smart_contract_transfer)
+            if manager_smart_contract_params.set_delegate is not None:
+                _encode_smart_contract_delegation(w, manager_smart_contract_params.set_delegate)
+            elif manager_smart_contract_params.cancel_delegate is not None:
+                _encode_smart_contract_delegation_remove(w)
+            elif manager_smart_contract_params.transfer is not None:
+                _encode_smart_contract_transfer(w, manager_smart_contract_params.transfer)
         else:
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
@@ -271,7 +277,7 @@ def _encode_natural(w: bytearray, num):
         _encode_zarith(w, modified)
 
 
-def _encode_kt_common(w: bytearray, sequence_length, operation):
+def _encode_manager_smart_contract_common(w: bytearray, sequence_length, operation):
     ADDRESS_LENGTH = 21
 
     argument_length = (
@@ -300,8 +306,8 @@ def _encode_smart_contract_transfer(w: bytearray, smart_contract_transfer):
     _encode_natural(value_natural, smart_contract_transfer.amount)
     sequence_length = MICHELSON_LENGTH + len(value_natural)
 
-    _encode_kt_common(w, sequence_length, "PUSH")
-    write_bytes(w, smart_contract_transfer.recipient)
+    _encode_manager_smart_contract_common(w, sequence_length, "PUSH")
+    write_bytes(w, smart_contract_transfer.destination)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["IMPLICIT_ACCOUNT"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["PUSH"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["mutez"]))
@@ -312,18 +318,18 @@ def _encode_smart_contract_transfer(w: bytearray, smart_contract_transfer):
 
 
 # smart_contract_delegation
-def _encode_smart_contract_delegation(w: bytearray, smart_contract_delegation):
+def _encode_smart_contract_delegation(w: bytearray, delegate):
     MICHELSON_LENGTH = 42  # length is fixed this time(no variable length fields)
 
-    _encode_kt_common(w, MICHELSON_LENGTH, "PUSH")
-    write_bytes(w, smart_contract_delegation.delegate)
+    _encode_manager_smart_contract_common(w, MICHELSON_LENGTH, "PUSH")
+    write_bytes(w, delegate)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SOME"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SET_DELEGATE"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))
 
 
-def _encode_smart_contract_delegation_remove(w: bytearray, smart_contract_delegation):
+def _encode_smart_contract_delegation_remove(w: bytearray):
     MICHELSON_LENGTH = 14  # length is fixed this time(no variable length fields)
-    _encode_kt_common(w, MICHELSON_LENGTH, "NONE")
+    _encode_manager_smart_contract_common(w, MICHELSON_LENGTH, "NONE")
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SET_DELEGATE"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))

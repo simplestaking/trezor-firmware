@@ -94,21 +94,17 @@ message TezosSignTx {
         optional uint64 amount = 6;
         optional TezosContractID destination = 7;
         optional bytes parameters = 8;
-        optional TezosTransactionSmartContractDelegationOp smart_contract_delegation = 10;
-        optional TezosTransactionSmartContractTransferOp smart_contract_transfer = 11;
+        optional TezosManagerSmartContractParams manager_smart_contract_params = 10;
 
-        /**
-         * used to delegate from an originated (kt) account
-         */
-        message TezosTransactionSmartContractDelegationOp {
-            optional bytes delegate = 1;
-        }
-        /**
-         * used to tranfer tokens from an originated (kt) account to an implicit account 
-         */
-        message TezosTransactionSmartContractTransferOp {
-            optional uint64 amount = 1;
-            optional bytes recipient = 2;
+        message TezosManagerSmartContractParams {
+            optional bytes set_delegate = 1;
+            optional bool cancel_delegate = 2;
+            optional TezosManagerSmartContractTransfer transfer = 3;
+
+            message TezosManagerSmartContractTransfer {
+                optional bytes destination = 1;
+                optional uint64 amount = 2;
+            }
         }
     }
     /**
