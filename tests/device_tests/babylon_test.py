@@ -221,9 +221,9 @@ resp = tezos.sign_tx(
                     "tag": 1,
                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
                 },
-                "manager_smart_contract_params": {
+                "parameters_manager": {
                     "transfer": {
-                        "amount": 2000000,
+                        "amount": 20000000,
                         "destination": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
                     }
                 },
@@ -250,7 +250,7 @@ resp = tezos.sign_tx(
 #                     "tag": 1,
 #                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
 #                 },
-#                 "manager_smart_contract_params": {
+#                 "parameters_manager": {
 #                     "cancel_delegate": True,
 #                 },
 #             },

@@ -3,7 +3,7 @@
 import protobuf as p
 
 from .TezosContractID import TezosContractID
-from .TezosManagerSmartContractParams import TezosManagerSmartContractParams
+from .TezosParametersManager import TezosParametersManager
 
 if __debug__:
     try:
@@ -25,7 +25,7 @@ class TezosTransactionOp(p.MessageType):
         amount: int = None,
         destination: TezosContractID = None,
         parameters: bytes = None,
-        manager_smart_contract_params: TezosManagerSmartContractParams = None,
+        parameters_manager: TezosParametersManager = None,
     ) -> None:
         self.source = source
         self.fee = fee
@@ -35,7 +35,7 @@ class TezosTransactionOp(p.MessageType):
         self.amount = amount
         self.destination = destination
         self.parameters = parameters
-        self.manager_smart_contract_params = manager_smart_contract_params
+        self.parameters_manager = parameters_manager
 
     @classmethod
     def get_fields(cls) -> Dict:
@@ -48,5 +48,5 @@ class TezosTransactionOp(p.MessageType):
             6: ('amount', p.UVarintType, 0),
             7: ('destination', TezosContractID, 0),
             8: ('parameters', p.BytesType, 0),
-            10: ('manager_smart_contract_params', TezosManagerSmartContractParams, 0),
+            10: ('parameters_manager', TezosParametersManager, 0),
         }

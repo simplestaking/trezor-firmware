@@ -232,9 +232,9 @@ from .TezosContractID import TezosContractID
 from .TezosDelegationOp import TezosDelegationOp
 from .TezosGetAddress import TezosGetAddress
 from .TezosGetPublicKey import TezosGetPublicKey
-from .TezosManagerSmartContractParams import TezosManagerSmartContractParams
-from .TezosManagerSmartContractTransfer import TezosManagerSmartContractTransfer
+from .TezosManagerTransfer import TezosManagerTransfer
 from .TezosOriginationOp import TezosOriginationOp
+from .TezosParametersManager import TezosParametersManager
 from .TezosProposalOp import TezosProposalOp
 from .TezosPublicKey import TezosPublicKey
 from .TezosRevealOp import TezosRevealOp
