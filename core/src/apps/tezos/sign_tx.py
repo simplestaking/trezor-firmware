@@ -35,7 +35,9 @@ async def sign_tx(ctx, msg, keychain):
             if parameters_manager.cancel_delegate is not None:
                 address = _get_address_from_contract(msg.transaction.destination)
                 await layout.require_confirm_delegation_manager_withdraw(ctx, address)
-                await layout.require_confirm_manager_remove_delegate(ctx, msg.transaction.fee)
+                await layout.require_confirm_manager_remove_delegate(
+                    ctx, msg.transaction.fee
+                )
 
             # operation to transfer tokens from a smart contract to an implicit account or a smart contract
             if parameters_manager.transfer is not None:
@@ -178,7 +180,10 @@ def _get_operation_bytes(w: bytearray, msg):
             elif parameters_manager.cancel_delegate is not None:
                 _encode_manager_delegation_remove(w)
             elif parameters_manager.transfer is not None:
-                if parameters_manager.transfer.destination.tag == TezosContractType.Implicit:
+                if (
+                    parameters_manager.transfer.destination.tag
+                    == TezosContractType.Implicit
+                ):
                     _encode_manager_to_implicit_transfer(w, parameters_manager.transfer)
                 else:
                     _encode_manager_to_manager_transfer(w, parameters_manager.transfer)

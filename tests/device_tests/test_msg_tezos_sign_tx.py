@@ -367,7 +367,7 @@ class TestMsgTezosSignTx:
                                 "destination": {
                                     "tag": 0,
                                     "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
-                                }
+                                },
                             }
                         },
                     },
@@ -404,7 +404,7 @@ class TestMsgTezosSignTx:
                                 "destination": {
                                     "tag": 1,
                                     "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
-                                }
+                                },
                             }
                         },
                     },
@@ -420,6 +420,5 @@ class TestMsgTezosSignTx:
             == "edsigtrnr4jXpPZK1yFVGtsapR4VHKp9Gnz1Uj7G4AdAXVn8ug16tgUx5u3TsyYJFp9MzENKuVqotaEwco3JhAhKpbjxbBQhEsT"
         )
         assert (
-            resp.operation_hash
-            == "opUE4xNkiUyYmJwUUgAab9xqHE66FXEc6VNZq4ZXDiBJcYwqNJX"
+            resp.operation_hash == "opUE4xNkiUyYmJwUUgAab9xqHE66FXEc6VNZq4ZXDiBJcYwqNJX"
         )
