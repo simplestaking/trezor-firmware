@@ -37,9 +37,9 @@ async def sign_tx(ctx, msg, keychain):
                 await layout.require_confirm_delegation_manager_withdraw(ctx, address)
                 await layout.require_confirm_manager_remove_delegate(ctx, msg.transaction.fee)
 
-            # operation to transfer tokens from a smart contract to an implicit account
+            # operation to transfer tokens from a smart contract to an implicit account or a smart contract
             if parameters_manager.transfer is not None:
-                to = _get_address_by_tag(parameters_manager.transfer.destination)
+                to = _get_address_from_contract(parameters_manager.transfer.destination)
                 await layout.require_confirm_tx(
                     ctx, to, parameters_manager.transfer.amount
                 )
@@ -178,7 +178,10 @@ def _get_operation_bytes(w: bytearray, msg):
             elif parameters_manager.cancel_delegate is not None:
                 _encode_manager_delegation_remove(w)
             elif parameters_manager.transfer is not None:
-                _encode_manager_transfer(w, parameters_manager.transfer)
+                if parameters_manager.transfer.destination.tag == TezosContractType.Implicit:
+                    _encode_manager_to_implicit_transfer(w, parameters_manager.transfer)
+                else:
+                    _encode_manager_to_manager_transfer(w, parameters_manager.transfer)
         else:
             _encode_data_with_bool_prefix(w, msg.transaction.parameters)
     # origination operation
@@ -275,12 +278,12 @@ def _encode_natural(w: bytearray, num):
         _encode_zarith(w, modified)
 
 
-def _encode_manager_common(w: bytearray, sequence_length, operation):
-    ADDRESS_LENGTH = 21
+def _encode_manager_common(w: bytearray, sequence_length, operation, to_contract=False):
+    IMPLICIT_ADDRESS_LENGTH = 21
+    SMART_CONTRACT_ADDRESS_LENGTH = 22
 
-    argument_length = (
-        sequence_length + 5
-    )  # 5 = tag and sequence_length (1 byte + 4 bytes)
+    # 5 = tag and sequence_length (1 byte + 4 bytes)
+    argument_length = sequence_length + 5
 
     helpers.write_bool(w, True)
     write_uint8(w, helpers.DO_ENTRYPOINT_TAG)
@@ -291,13 +294,19 @@ def _encode_manager_common(w: bytearray, sequence_length, operation):
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["NIL"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["operation"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES[operation]))
-    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["key_hash"]))
+    if to_contract is True:
+        write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["address"]))
+    else:
+        write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["key_hash"]))
     if operation == "PUSH":
         write_bytes(w, bytes([10]))  # byte sequence
-        write_uint32_be(w, ADDRESS_LENGTH)
+        if to_contract is True:
+            write_uint32_be(w, SMART_CONTRACT_ADDRESS_LENGTH)
+        else:
+            write_uint32_be(w, IMPLICIT_ADDRESS_LENGTH)
 
 
-def _encode_manager_transfer(w: bytearray, manager_transfer):
+def _encode_manager_to_implicit_transfer(w: bytearray, manager_transfer):
     MICHELSON_LENGTH = 48
 
     value_natural = bytearray()
@@ -305,7 +314,7 @@ def _encode_manager_transfer(w: bytearray, manager_transfer):
     sequence_length = MICHELSON_LENGTH + len(value_natural)
 
     _encode_manager_common(w, sequence_length, "PUSH")
-    write_bytes(w, manager_transfer.destination)
+    write_bytes(w, manager_transfer.destination.hash)
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["IMPLICIT_ACCOUNT"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["PUSH"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["mutez"]))
@@ -330,4 +339,24 @@ def _encode_manager_delegation_remove(w: bytearray):
     MICHELSON_LENGTH = 14  # length is fixed this time(no variable length fields)
     _encode_manager_common(w, MICHELSON_LENGTH, "NONE")
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["SET_DELEGATE"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))
+
+
+def _encode_manager_to_manager_transfer(w: bytearray, manager_transfer):
+    MICHELSON_LENGTH = 77
+
+    value_natural = bytearray()
+    _encode_natural(value_natural, manager_transfer.amount)
+    sequence_length = MICHELSON_LENGTH + len(value_natural)
+
+    _encode_manager_common(w, sequence_length, "PUSH", to_contract=True)
+    _encode_contract_id(w, manager_transfer.destination)
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONTRACT"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["unit"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["ASSERT_SOME"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["PUSH"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["mutez"]))
+    _encode_natural(w, manager_transfer.amount)
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["UNIT"]))
+    write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["TRANSFER_TOKENS"]))
     write_bytes(w, bytes(helpers.MICHELSON_INSTRUCTION_BYTES["CONS"]))

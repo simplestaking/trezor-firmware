@@ -2,6 +2,8 @@
 # fmt: off
 from .. import protobuf as p
 
+from .TezosContractID import TezosContractID
+
 if __debug__:
     try:
         from typing import Dict, List, Optional
@@ -14,7 +16,7 @@ class TezosManagerTransfer(p.MessageType):
 
     def __init__(
         self,
-        destination: bytes = None,
+        destination: TezosContractID = None,
         amount: int = None,
     ) -> None:
         self.destination = destination
@@ -23,6 +25,6 @@ class TezosManagerTransfer(p.MessageType):
     @classmethod
     def get_fields(cls) -> Dict:
         return {
-            1: ('destination', p.BytesType, 0),
+            1: ('destination', TezosContractID, 0),
             2: ('amount', p.UVarintType, 0),
         }

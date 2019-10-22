@@ -364,7 +364,10 @@ class TestMsgTezosSignTx:
                         "parameters_manager": {
                             "transfer": {
                                 "amount": 20000,
-                                "destination": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                                "destination": {
+                                    "tag": 0,
+                                    "hash": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                                }
                             }
                         },
                     },
@@ -374,4 +377,49 @@ class TestMsgTezosSignTx:
         assert (
             resp.signature
             == "edsigu2MMdtkWyRofmSwB5gZuF3P6rzbuWXjWHmsG6v2NQgfgKrDoEZ6czUUXXrCCoQL3TfuTX1r3epCXpvVMcFKuRcjBL83RFN"
+        )
+
+    def test_tezos_smart_contract_transfer_to_contract(self, client):
+        resp = tezos.sign_tx(
+            client,
+            TEZOS_PATH_10,
+            dict_to_proto(
+                messages.TezosSignTx,
+                {
+                    "branch": "8c696f9eb98cd641e33b680f424f7334b903d2b0108f0f896e73e921c44bf4c9",
+                    "transaction": {
+                        "source": "005f450441f41ee11eee78a31d1e1e55627c783bd6",
+                        "fee": 4813,
+                        "counter": 272,
+                        "gas_limit": 44725,
+                        "storage_limit": 0,
+                        "amount": 0,
+                        "destination": {
+                            "tag": 1,
+                            "hash": "c116a6c74bf00a5839b593838215fe1fcf2db59c00",
+                        },
+                        "parameters_manager": {
+                            "transfer": {
+                                "amount": 200,
+                                "destination": {
+                                    "tag": 1,
+                                    "hash": "8b83360512c6045c1185f8000de41302e23a220c00",
+                                }
+                            }
+                        },
+                    },
+                },
+            ),
+        )
+        assert (
+            resp.sig_op_contents.hex()
+            == "8c696f9eb98cd641e33b680f424f7334b903d2b0108f0f896e73e921c44bf4c96c005f450441f41ee11eee78a31d1e1e55627c783bd6cd259002b5dd02000001c116a6c74bf00a5839b593838215fe1fcf2db59c00ff020000005502000000500320053d036d0743036e0a00000016018b83360512c6045c1185f8000de41302e23a220c000555036c0200000015072f02000000090200000004034f032702000000000743036a008803034f034d031b911b8e7f22acdacc78e6d40566636a7029773c9ebfa741bb94bb58fb9e705d3ad695ac24fd1a58943c3070e9c38b0660671adb478233ae31005cd9139c84a80b"
+        )
+        assert (
+            resp.signature
+            == "edsigtrnr4jXpPZK1yFVGtsapR4VHKp9Gnz1Uj7G4AdAXVn8ug16tgUx5u3TsyYJFp9MzENKuVqotaEwco3JhAhKpbjxbBQhEsT"
+        )
+        assert (
+            resp.operation_hash
+            == "opUE4xNkiUyYmJwUUgAab9xqHE66FXEc6VNZq4ZXDiBJcYwqNJX"
         )
